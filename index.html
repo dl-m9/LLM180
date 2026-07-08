@@ -1,0 +1,2933 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>大模型面试八股训练台 180</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --ink: #152033;
+      --muted: #5b6577;
+      --line: #dde5ef;
+      --blue: #1d5fd1;
+      --blue-soft: #eaf2ff;
+      --green: #147044;
+      --green-soft: #e7f6ee;
+      --orange: #a45a00;
+      --orange-soft: #fff3df;
+      --red: #b42318;
+      --red-soft: #fff0ef;
+      --purple: #6b3ab7;
+      --purple-soft: #f1ecff;
+      --shadow: 0 14px 34px rgba(27, 39, 65, 0.08);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box }
+
+    body {
+      margin: 0;
+      background:
+        linear-gradient(180deg, #edf4ff 0, #f7f9fc 230px, var(--bg) 100%);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.56;
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 8px;
+      min-height: 36px;
+      padding: 7px 11px;
+      cursor: pointer;
+      transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease, background 160ms ease;
+    }
+
+    button:hover { border-color: #aebbd0; transform: translateY(-1px) }
+    button:focus-visible, input:focus-visible, select:focus-visible {
+      outline: 3px solid rgba(29, 95, 209, 0.18);
+      outline-offset: 2px;
+    }
+    button.primary {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(29, 95, 209, 0.18);
+    }
+    button.good { background: var(--green-soft); border-color: #b7dfca; color: var(--green) }
+    button.warn { background: var(--orange-soft); border-color: #ffd196; color: var(--orange) }
+    button.bad { background: var(--red-soft); border-color: #ffc1bc; color: var(--red) }
+    button.ghost { background: #f8fafc }
+    button.active { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(29, 95, 209, 0.12) }
+
+    a { color: var(--blue); text-decoration: none }
+    a:hover { text-decoration: underline }
+
+    .page {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 18px 16px 56px;
+    }
+
+    .top {
+      background: linear-gradient(180deg, #ffffff 0, #fbfdff 100%);
+      border: 1px solid #d5e1f2;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px 18px;
+    }
+
+    .topline {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    h1, h2, h3, p { margin: 0 }
+    h1 { font-size: clamp(24px, 2.4vw, 32px); line-height: 1.15; letter-spacing: 0 }
+    h2 { font-size: 20px; letter-spacing: 0 }
+    h3 { font-size: 16px; letter-spacing: 0 }
+    .muted { color: var(--muted) }
+    .subtitle { max-width: 760px; margin-top: 6px; color: var(--muted) }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .stat {
+      border: 1px solid #e0e8f3;
+      border-radius: var(--radius);
+      padding: 9px 10px;
+      background: rgba(255, 255, 255, 0.74);
+      min-height: 58px;
+    }
+
+    .stat strong {
+      display: block;
+      color: var(--blue);
+      font-size: 20px;
+      line-height: 1.1;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 230px minmax(0, 1fr);
+      gap: 16px;
+      margin-top: 16px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+
+    aside.panel {
+      position: sticky;
+      top: 16px;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .modebar {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .category-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .category-btn {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      text-align: left;
+      min-height: 48px;
+      padding: 8px 10px;
+    }
+
+    .modebar button.active,
+    .category-btn.active {
+      background: var(--blue-soft);
+      border-color: #b6cdf5;
+    }
+
+    .progress {
+      grid-column: 1 / -1;
+      height: 7px;
+      background: #e8edf5;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue), #18a999);
+    }
+
+    .filters {
+      display: grid;
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    label {
+      display: grid;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    input, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      min-height: 36px;
+      padding: 7px 9px;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .question-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      border-radius: 999px;
+      padding: 3px 9px;
+      background: #eef2f7;
+      color: #344054;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .badge.blue { background: var(--blue-soft); color: #164b9c }
+    .badge.green { background: var(--green-soft); color: var(--green) }
+    .badge.orange { background: var(--orange-soft); color: var(--orange) }
+    .badge.red { background: var(--red-soft); color: var(--red) }
+    .badge.purple { background: var(--purple-soft); color: var(--purple) }
+
+    .timer {
+      min-width: 106px;
+      text-align: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px;
+      background: #fbfdff;
+    }
+
+    .timer strong {
+      display: block;
+      font-size: 24px;
+      line-height: 1.1;
+      color: var(--blue);
+    }
+
+    .question-box {
+      margin-top: 16px;
+      border: 1px solid #ccd9ec;
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, #ffffff 0, #fbfdff 100%);
+      padding: 22px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
+    }
+
+    .question-text {
+      font-size: 26px;
+      line-height: 1.35;
+      letter-spacing: 0;
+    }
+
+    .answer {
+      margin-top: 14px;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+      display: none;
+    }
+
+    .answer.visible { display: block }
+
+    .answer-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .note {
+      border-left: 4px solid var(--blue);
+      background: var(--blue-soft);
+      padding: 13px 14px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      color: #183b73;
+      font-size: 16px;
+    }
+
+    .mini {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: #fff;
+      box-shadow: 0 4px 14px rgba(27, 39, 65, 0.04);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+      align-items: center;
+    }
+
+    .actions button {
+      font-weight: 760;
+    }
+
+    .question-list {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      max-height: 360px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .qpick {
+      text-align: left;
+      min-height: 66px;
+      display: block;
+      overflow: hidden;
+    }
+
+    .qpick strong {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .qpick span { font-size: 12px; color: var(--muted) }
+
+    .deep-dive {
+      margin-top: 12px;
+      max-height: 520px;
+      overflow: auto;
+    }
+
+    .deep-dive-text {
+      white-space: pre-line;
+      color: #334155;
+      line-height: 1.72;
+    }
+
+    .secondary-answer {
+      margin-top: 12px;
+    }
+
+    .secondary-panel {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfdff;
+      padding: 0;
+    }
+
+    .secondary-panel[open] {
+      background: #fff;
+      box-shadow: 0 8px 20px rgba(27, 39, 65, 0.05);
+    }
+
+    .secondary-panel > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 10px 12px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .secondary-panel > summary::-webkit-details-marker { display: none }
+
+    .secondary-panel > summary::after {
+      content: "+";
+      float: right;
+      color: var(--muted);
+      font-weight: 900;
+    }
+
+    .secondary-panel[open] > summary::after { content: "-" }
+
+    .secondary-panel-body {
+      border-top: 1px solid var(--line);
+      padding: 12px;
+    }
+
+    .right {
+      display: none;
+    }
+
+    ul {
+      margin: 8px 0 0 18px;
+      padding: 0;
+    }
+
+    li { margin: 5px 0 }
+
+    .source-list {
+      display: grid;
+      gap: 7px;
+      margin-top: 8px;
+      font-size: 13px;
+    }
+
+    .wrongbook {
+      margin-top: 16px;
+    }
+
+    .wrongbook > summary {
+      cursor: pointer;
+      list-style: none;
+      font-size: 18px;
+      font-weight: 850;
+    }
+
+    .wrongbook > summary::-webkit-details-marker { display: none }
+
+    .wrong-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .wrong-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: #fbfdff;
+    }
+
+    .wrong-card button {
+      margin-top: 8px;
+      width: 100%;
+    }
+
+    .mock-summary {
+      margin-top: 12px;
+      display: none;
+    }
+
+    .mock-summary.visible { display: block }
+
+    .kbd {
+      display: inline-flex;
+      min-width: 24px;
+      min-height: 22px;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #cbd5e1;
+      border-bottom-width: 2px;
+      border-radius: 5px;
+      background: #fff;
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    @media (max-width: 1160px) {
+      .app { grid-template-columns: 220px minmax(0, 1fr) }
+      .stats { grid-template-columns: repeat(3, minmax(0, 1fr)) }
+      .wrong-list { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+    }
+
+    @media (max-width: 780px) {
+      .page { padding: 14px 10px 44px }
+      .topline, .question-head { flex-direction: column }
+      .app { grid-template-columns: 1fr }
+      aside.panel { position: static }
+      .stats, .answer-grid, .question-list, .wrong-list { grid-template-columns: 1fr }
+      .question-text { font-size: 21px }
+      .timer { width: 100% }
+      .toolbar button { flex: 1 1 120px }
+    }
+
+    /* Linear/Apple focused redesign overrides. */
+    :root {
+      --bg: #f7f8fa;
+      --panel: #ffffff;
+      --ink: #111827;
+      --muted: #6b7280;
+      --soft: #9ca3af;
+      --line: #e5e7eb;
+      --line-strong: #d1d5db;
+      --blue: #2563eb;
+      --blue-soft: #eff6ff;
+      --green: #15803d;
+      --green-soft: #f0fdf4;
+      --orange: #b45309;
+      --orange-soft: #fffbeb;
+      --red: #b91c1c;
+      --red-soft: #fef2f2;
+      --shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+    }
+
+    body {
+      background: var(--bg);
+      line-height: 1.55;
+    }
+
+    .page {
+      max-width: 980px;
+      padding: 22px 18px 56px;
+    }
+
+    .top, .panel {
+      background: transparent;
+      border-color: transparent;
+      box-shadow: none;
+      padding: 0;
+    }
+
+    .top {
+      background: transparent;
+      padding: 0;
+    }
+
+    h1 { font-size: 22px; line-height: 1.2; font-weight: 760 }
+    h2 { font-size: 16px; font-weight: 760 }
+    h3 { font-size: 14px; font-weight: 760 }
+    .subtitle { max-width: 700px; font-size: 14px }
+
+    button {
+      min-height: 34px;
+      padding: 7px 12px;
+      transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
+    }
+
+    button:hover {
+      transform: none;
+      border-color: var(--line-strong);
+      background: #f9fafb;
+    }
+
+    button.primary {
+      background: var(--blue);
+      border-color: var(--blue);
+      box-shadow: none;
+    }
+
+    button.primary:hover {
+      background: #1d4ed8;
+      border-color: #1d4ed8;
+    }
+
+    button.good { background: var(--green-soft); border-color: #bbf7d0; color: var(--green) }
+    button.warn { background: var(--orange-soft); border-color: #fde68a; color: var(--orange) }
+    button.bad { background: var(--red-soft); border-color: #fecaca; color: var(--red) }
+    button.ghost { background: #fff; color: #374151 }
+    button.active { border-color: #bfdbfe; background: var(--blue-soft); color: #1d4ed8; box-shadow: none }
+
+    .toolbar {
+      justify-content: flex-end;
+    }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+
+    .stat {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: 0;
+      padding: 6px 9px;
+      background: transparent;
+      min-height: 32px;
+    }
+
+    .stat strong {
+      display: inline;
+      color: var(--blue);
+      font-size: 14px;
+    }
+
+    .stat span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .app {
+      display: block;
+      margin-top: 14px;
+    }
+
+    aside.panel {
+      position: static;
+    }
+
+    .modebar, .topic-rail {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 2px 0 8px;
+      scrollbar-width: none;
+    }
+
+    .modebar::-webkit-scrollbar,
+    .topic-rail::-webkit-scrollbar,
+    .answer-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .modebar { margin-top: 14px }
+    .topic-shell { margin-top: 14px }
+    .topic-label { font-size: 12px; color: var(--soft); margin-bottom: 7px }
+
+    .category-list {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      margin-top: 0;
+      padding: 2px 0 8px;
+      scrollbar-width: none;
+    }
+
+    .category-btn {
+      flex: 0 0 auto;
+      min-width: auto;
+      min-height: 36px;
+      display: block;
+      text-align: left;
+      padding: 7px 10px;
+      background: transparent;
+      border-color: transparent;
+    }
+
+    .category-btn strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .category-btn span {
+      display: block;
+      margin-top: 2px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .category-btn.active {
+      border-color: transparent;
+      background: var(--blue-soft);
+    }
+
+    .modebar button {
+      border-color: transparent;
+      background: transparent;
+    }
+
+    .modebar button.active {
+      border-color: transparent;
+      background: var(--blue-soft);
+    }
+
+    .progress { display: none }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 10px;
+    }
+
+    label {
+      display: flex;
+      flex: 1 1 190px;
+      flex-direction: column;
+    }
+
+    input, select {
+      min-height: 36px;
+      padding: 7px 10px;
+      border-color: var(--line);
+    }
+
+    .question-card {
+      padding: 20px;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .question-head {
+      align-items: flex-start;
+    }
+
+    .question-meta {
+      display: grid;
+      gap: 5px;
+    }
+
+    .badge {
+      min-height: 24px;
+      background: #f3f4f6;
+      color: #4b5563;
+      font-weight: 650;
+    }
+
+    .timer {
+      min-width: 94px;
+      padding: 8px 10px;
+      background: #fff;
+    }
+
+    .timer strong {
+      font-size: 20px;
+    }
+
+    .question-box {
+      margin-top: 18px;
+      border: 0;
+      background: transparent;
+      padding: 10px 0 0;
+      box-shadow: none;
+    }
+
+    .question-text {
+      font-size: 28px;
+      line-height: 1.35;
+      font-weight: 680;
+    }
+
+    .actions {
+      margin-top: 20px;
+    }
+
+    .answer {
+      margin-top: 18px;
+    }
+
+    .answer-tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      margin-bottom: 12px;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+
+    .answer-tab {
+      flex: 0 0 auto;
+      min-height: 32px;
+      padding: 6px 11px;
+      font-size: 13px;
+    }
+
+    .answer-tab.active {
+      background: var(--blue-soft);
+      border-color: #bfdbfe;
+      color: #1d4ed8;
+    }
+
+    .tab-panel { display: none }
+    .tab-panel.active { display: block }
+
+    .note {
+      border: 0;
+      border-left: 2px solid #bfdbfe;
+      background: transparent;
+      padding: 2px 0 2px 14px;
+      border-radius: var(--radius);
+      color: #1f2937;
+      line-height: 1.72;
+    }
+
+    .mini {
+      border: 0;
+      background: transparent;
+      padding: 0;
+      box-shadow: none;
+    }
+
+    .deep-dive-text {
+      line-height: 1.75;
+      font-size: 15px;
+      max-height: 560px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .secondary-panel {
+      background: transparent;
+      border-color: var(--line);
+    }
+
+    .secondary-panel[open] {
+      box-shadow: none;
+    }
+
+    .wrong-card {
+      background: transparent;
+      border-color: var(--line);
+    }
+
+    @media (max-width: 780px) {
+      .page { padding: 14px 10px 44px }
+      .topline, .question-head { flex-direction: column; align-items: stretch }
+      .toolbar { justify-content: flex-start }
+      .stats, .answer-grid, .question-list, .wrong-list { grid-template-columns: 1fr }
+      .stat { flex: 1 1 42% }
+      .question-box { padding: 18px }
+      .question-text { font-size: 22px }
+      .actions button { flex: 1 1 calc(50% - 8px) }
+      .actions button.primary, .actions #nextBtn { flex-basis: 100% }
+    }
+
+    .page > :not(.slide-deck) {
+      display: none !important;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 50% -12%, rgba(255, 255, 255, 0.86), transparent 38%),
+        linear-gradient(180deg, #f5f1e8 0, #eee7dc 100%);
+      color: #1f1b16;
+      font-family: "Times New Roman", Times, "Songti SC", "STSong", SimSun, "Noto Serif CJK SC", serif;
+      min-height: 100vh;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    .page {
+      max-width: 1500px;
+      padding: 22px 46px 30px;
+    }
+
+    .slide-deck {
+      min-height: calc(100vh - 52px);
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr) auto;
+      gap: 14px;
+    }
+
+    .slide-deck button:hover {
+      transform: none;
+    }
+
+    .slide-navbar {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 18px;
+      min-height: 42px;
+      color: #726b60;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .slide-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .slide-brand strong {
+      color: #211d18;
+      font-size: 17px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .slide-brand span {
+      color: #887c6d;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .slide-topic-nav {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      width: 100%;
+      max-width: none;
+      padding: 3px;
+      overflow-x: auto;
+      border: 1px solid rgba(126, 111, 92, 0.18);
+      border-radius: 8px;
+      background: rgba(255, 253, 248, 0.58);
+      scrollbar-width: none;
+    }
+
+    .slide-topic-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .slide-topic-btn {
+      flex: 0 0 auto;
+      min-height: 30px;
+      padding: 5px 10px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: #72695e;
+      font-size: 13px;
+      white-space: nowrap;
+      box-shadow: none;
+    }
+
+    .slide-topic-btn.active {
+      background: #eef3f8;
+      color: #244d73;
+      box-shadow: inset 0 0 0 1px rgba(36, 77, 115, 0.08);
+    }
+
+    .slide-topic-btn small {
+      margin-left: 5px;
+      color: #9a8f82;
+      font-size: 11px;
+    }
+
+    .slide-counter {
+      justify-self: end;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      color: #756c61;
+      white-space: nowrap;
+    }
+
+    .slide-counter strong {
+      color: #211d18;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .slide-importance-bar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 16px;
+      padding: 0 4px;
+      color: #746b5f;
+      font-size: 13px;
+    }
+
+    .slide-importance-track {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .slide-importance-track::-webkit-scrollbar {
+      display: none;
+    }
+
+    .slide-marker {
+      position: relative;
+      flex: 0 0 auto;
+      padding: 0 0 8px;
+      color: #8b8174;
+      white-space: nowrap;
+    }
+
+    .slide-marker::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 2px;
+      border-radius: 999px;
+      background: transparent;
+    }
+
+    .slide-marker.active {
+      color: #254f77;
+      font-weight: 700;
+    }
+
+    .slide-marker.active::after {
+      background: #446e96;
+    }
+
+    .slide-importance {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 2px 9px;
+      border: 1px solid #d8ccb9;
+      border-radius: 999px;
+      background: rgba(255, 253, 248, 0.72);
+      color: #665942;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .slide-importance[data-level="3"] {
+      border-color: #b6c8da;
+      background: #edf3f8;
+      color: #244d73;
+    }
+
+    .slide-importance[data-level="2"] {
+      border-color: #dcccae;
+      background: #faf4e8;
+      color: #735b2b;
+    }
+
+    .slide-importance[data-level="1"] {
+      color: #766f66;
+    }
+
+    .slide-stage {
+      position: relative;
+      min-height: 0;
+      display: grid;
+      align-items: center;
+      width: min(100%, 1230px);
+      margin: 0 auto;
+    }
+
+    .slide-card {
+      height: min(79vh, 820px);
+      min-height: 650px;
+      background: #fffdf8;
+      border: 1px solid #d9d0c2;
+      border-radius: 8px;
+      box-shadow: 0 24px 74px rgba(62, 49, 32, 0.14);
+      padding: clamp(32px, 3.8vw, 52px);
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr);
+      gap: 18px;
+    }
+
+    .slide-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      color: #7c7165;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .slide-meta-main {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+
+    .slide-mastery {
+      color: #846d44;
+      white-space: nowrap;
+    }
+
+    .slide-mastery[data-state="掌握"] { color: #23694a }
+    .slide-mastery[data-state="模糊"] { color: #8d5b16 }
+    .slide-mastery[data-state="不会"] { color: #9d332e }
+
+    .slide-question {
+      margin: 0;
+      padding-bottom: 22px;
+      border-bottom: 1px solid #e6ded1;
+      color: #17130f;
+      font-size: clamp(29px, 3vw, 42px);
+      line-height: 1.25;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .slide-answer {
+      min-height: 0;
+      overflow: auto;
+      color: #302a23;
+      font-size: clamp(16px, 1.16vw, 17px);
+      line-height: 1.74;
+      padding-right: 10px;
+      scrollbar-width: thin;
+      scrollbar-color: #c7c1b8 transparent;
+    }
+
+    .slide-answer::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .slide-answer::-webkit-scrollbar-thumb {
+      border-radius: 999px;
+      background: #c7c1b8;
+    }
+
+    .slide-answer-lead {
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #e9e1d4;
+    }
+
+    .slide-answer h2,
+    .slide-answer h3 {
+      margin: 0 0 6px;
+      color: #211d18;
+      font-size: 18px;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .slide-answer h3 {
+      font-size: 16px;
+    }
+
+    .slide-answer p {
+      margin: 0;
+    }
+
+    .slide-answer-columns {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px 30px;
+    }
+
+    .slide-answer-section {
+      break-inside: avoid;
+    }
+
+    .slide-answer-section p {
+      white-space: pre-line;
+    }
+
+    .slide-recall {
+      grid-column: 1 / -1;
+      padding-top: 2px;
+      border-top: 1px solid #eee5d8;
+    }
+
+    .slide-recall-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .slide-recall ol,
+    .slide-recall ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .slide-recall li + li {
+      margin-top: 4px;
+    }
+
+    .slide-answer::selection,
+    .slide-question::selection {
+      background: #eadfcf;
+    }
+
+    .slide-arrow {
+      position: absolute;
+      z-index: 2;
+      top: 50%;
+      transform: translate3d(0, -50%, 0);
+      display: grid;
+      place-items: center;
+      width: 52px;
+      height: 68px;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(255, 253, 248, 0.88);
+      color: #5d554a;
+      box-shadow: 0 12px 30px rgba(63, 49, 33, 0.12);
+      transition: color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+    }
+
+    .slide-arrow svg {
+      width: 28px;
+      height: 28px;
+      stroke-width: 2.4;
+    }
+
+    .slide-arrow:hover,
+    .slide-arrow:focus-visible {
+      color: #1f1a14;
+      background: #fffaf0;
+      box-shadow: 0 16px 38px rgba(63, 49, 33, 0.16);
+      transform: translate3d(0, -50%, 0) !important;
+    }
+
+    .slide-arrow-left { left: -96px }
+    .slide-arrow-right { right: -96px }
+
+    .slide-footer {
+      display: grid;
+      gap: 10px;
+      width: min(100%, 1230px);
+      margin: 0 auto;
+      color: #776e62;
+      font-size: 13px;
+    }
+
+    .slide-progress {
+      height: 3px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #d8d0c2;
+    }
+
+    .slide-progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: #446e96;
+      transition: width 180ms ease;
+    }
+
+    .slide-footer-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .slide-hint {
+      color: #81776b;
+    }
+
+    .slide-controls {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .slide-controls button {
+      min-height: 34px;
+      padding: 6px 12px;
+      border-color: #d8d0c2;
+      background: rgba(255, 253, 248, 0.72);
+      color: #554d43;
+      font-size: 13px;
+      box-shadow: none;
+    }
+
+    .slide-controls button.primary-action {
+      background: #eef3f8;
+      border-color: #b8cada;
+      color: #244d73;
+    }
+
+    .slide-controls button.active {
+      border-color: #446e96;
+      background: #e7eff7;
+      color: #1f496e;
+      box-shadow: inset 0 0 0 1px rgba(68, 110, 150, 0.08);
+    }
+
+    .slide-footer-note {
+      justify-self: end;
+      color: #81776b;
+      text-align: right;
+    }
+
+    @media (max-width: 1420px) {
+      .page {
+        padding-left: 28px;
+        padding-right: 28px;
+      }
+
+      .slide-stage,
+      .slide-footer {
+        width: min(100%, 1120px);
+      }
+
+      .slide-arrow-left { left: -54px }
+      .slide-arrow-right { right: -54px }
+
+      .slide-arrow {
+        width: 48px;
+        height: 64px;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .page {
+        padding: 14px 14px 24px;
+      }
+
+      .slide-deck {
+        min-height: calc(100vh - 38px);
+        gap: 10px;
+      }
+
+      .slide-navbar {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .slide-topic-nav {
+        max-width: none;
+        order: 2;
+      }
+
+      .slide-counter {
+        justify-self: start;
+      }
+
+      .slide-importance-bar {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+
+      .slide-card {
+        height: auto;
+        min-height: calc(100vh - 218px);
+        padding: 26px 22px 76px;
+        gap: 14px;
+      }
+
+      .slide-meta {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .slide-question {
+        font-size: 28px;
+        padding-bottom: 16px;
+      }
+
+      .slide-answer {
+        font-size: 17px;
+        line-height: 1.82;
+      }
+
+      .slide-answer-columns,
+      .slide-recall-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .slide-arrow {
+        top: auto;
+        bottom: 18px;
+        width: 48px;
+        height: 48px;
+        transform: none;
+      }
+
+      .slide-arrow svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      .slide-arrow:hover,
+      .slide-arrow:focus-visible {
+        transform: none !important;
+      }
+
+      .slide-arrow-left { left: 18px }
+      .slide-arrow-right { right: 18px }
+
+      .slide-footer-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .slide-controls {
+        order: 1;
+        justify-content: stretch;
+        flex-wrap: wrap;
+      }
+
+      .slide-controls button {
+        flex: 1 1 calc(50% - 8px);
+      }
+
+      .slide-hint {
+        order: 2;
+      }
+
+      .slide-footer-note {
+        order: 3;
+        justify-self: start;
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="slide-deck" aria-label="大模型面试题幻灯片">
+      <nav class="slide-navbar" aria-label="训练导航">
+        <div class="slide-brand">
+          <strong>大模型面试八股训练</strong>
+          <span>后训练 · Agentic RL · 推理系统</span>
+        </div>
+        <div id="slideTopicNav" class="slide-topic-nav" aria-label="题目主题"></div>
+        <div id="slideProgressCompact" class="slide-counter">
+          <strong id="slideIndex">1</strong><span>/</span><span id="slideTotal">180</span>
+        </div>
+      </nav>
+
+      <div class="slide-importance-bar">
+        <div id="slideImportanceTrack" class="slide-importance-track" aria-label="题目重要性导航"></div>
+        <span id="slideImportanceReason">按主题频率、公司专项和追问深度估计重要性</span>
+      </div>
+
+      <div class="slide-stage">
+        <button id="slidePrev" class="slide-arrow slide-arrow-left" aria-label="上一题">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15 5L8 12l7 7" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <article class="slide-card">
+          <div class="slide-meta">
+            <div class="slide-meta-main">
+              <span id="slideImportance" class="slide-importance" data-level="2">重要性 中</span>
+              <span id="slideCategory"></span>
+            </div>
+            <span id="slideMastery" class="slide-mastery" data-state="未练">未练</span>
+          </div>
+          <h1 id="slideQuestion" class="slide-question"></h1>
+          <div id="slideAnswer" class="slide-answer"></div>
+        </article>
+        <button id="slideNext" class="slide-arrow slide-arrow-right" aria-label="下一题">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="slide-footer">
+        <div class="slide-progress" aria-hidden="true"><div id="slideProgressFill" class="slide-progress-fill"></div></div>
+        <div class="slide-footer-row">
+          <span class="slide-hint">← / → 切换题目，1 不会，2 模糊，3 掌握，B 错题</span>
+          <div class="slide-controls" aria-label="学习操作">
+            <button id="slidePrevBottom">上一题</button>
+            <button id="slideMarkBad">不会</button>
+            <button id="slideMarkMid">标记模糊</button>
+            <button id="slideMarkGood" class="primary-action">已掌握</button>
+            <button id="slideBookmark">加入错题</button>
+            <button id="slideNextBottom">下一题</button>
+          </div>
+          <span id="slideFooterNote" class="slide-footer-note">答案已融合口述和原理</span>
+        </div>
+      </div>
+    </section>
+
+    <header class="top">
+      <div class="topline">
+        <div>
+          <h1>大模型面试八股训练台</h1>
+          <p class="subtitle">180 道精练题，面向人才计划实习的大模型后训练、Agentic RL、RAG/工具调用、自进化和推理系统。题库结合已整理的 88 条面经与公开技术资料，答案优先训练 60 到 90 秒口述。</p>
+        </div>
+        <div class="toolbar">
+          <button id="exportBtn" class="ghost">导出进度</button>
+          <button id="resetBtn" class="ghost">重置本页</button>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><strong id="todayCount">0</strong><span class="muted">今日已练</span></div>
+        <div class="stat"><strong id="accuracy">0%</strong><span class="muted">掌握率</span></div>
+        <div class="stat"><strong id="wrongCount">0</strong><span class="muted">错题/待复习</span></div>
+        <div class="stat"><strong id="streak">0</strong><span class="muted">连续学习天数</span></div>
+        <div class="stat"><strong id="recommend">后训练 RL</strong><span class="muted">当前推荐主题</span></div>
+      </div>
+      <div class="modebar">
+        <button id="modeChallenge" class="active">闯关模式</button>
+        <button id="modeWrong">错题复习</button>
+        <button id="modeMock">模拟面试 8 题</button>
+      </div>
+    </header>
+
+    <section class="topic-shell">
+      <div class="topic-label">选择主题</div>
+      <div id="categoryList" class="category-list topic-rail"></div>
+    </section>
+
+    <div class="app">
+      <main class="panel question-card">
+        <div class="question-head">
+          <div class="question-meta">
+            <h2 id="questionTitle">加载中</h2>
+            <div id="questionBadges" class="badges"></div>
+          </div>
+          <div class="timer">
+            <strong id="timerText">00:00</strong>
+            <span class="muted" id="timerLabel">本题用时</span>
+          </div>
+        </div>
+
+        <div class="question-box">
+          <p id="questionText" class="question-text"></p>
+          <div class="actions">
+            <button id="answerBtn" class="primary">显示答案</button>
+            <button id="markBad" class="bad">不会 1</button>
+            <button id="markMid" class="warn">模糊 2</button>
+            <button id="markGood" class="good">掌握 3</button>
+            <button id="bookmarkBtn">加入错题 B</button>
+            <button id="nextBtn" class="ghost">下一题</button>
+          </div>
+          <div id="answerPanel" class="answer">
+            <div class="answer-tabs" role="tablist" aria-label="答案视图">
+              <button id="tabOral" class="answer-tab active" data-tab="oral" role="tab">口述版</button>
+              <button id="tabDeep" class="answer-tab" data-tab="deep" role="tab">原理版</button>
+              <button id="tabFollow" class="answer-tab" data-tab="follow" role="tab">追问/坑点</button>
+              <button id="tabSource" class="answer-tab" data-tab="source" role="tab">来源/快捷键</button>
+            </div>
+
+            <section id="panelOral" class="tab-panel active" role="tabpanel">
+              <div class="note" id="oralAnswer"></div>
+              <div class="mini secondary-answer">
+                <h3>结合你简历的一句话</h3>
+                <p id="personalHook" class="muted"></p>
+              </div>
+            </section>
+
+            <section id="panelDeep" class="tab-panel" role="tabpanel">
+              <p class="deep-dive-text" id="deepDive"></p>
+            </section>
+
+            <section id="panelFollow" class="tab-panel" role="tabpanel">
+              <div class="answer-grid">
+                <div class="mini">
+                  <h3>追问链</h3>
+                  <ul id="followUps"></ul>
+                </div>
+                <div class="mini">
+                  <h3>常见坑</h3>
+                  <ul id="pitfalls"></ul>
+                </div>
+              </div>
+            </section>
+
+            <section id="panelSource" class="tab-panel" role="tabpanel">
+              <div class="answer-grid">
+                <div class="mini">
+                  <h3>本题来源</h3>
+                  <div id="sourceList" class="source-list"></div>
+                </div>
+                <div class="mini">
+                  <h3>快捷键</h3>
+                  <p><span class="kbd">Space</span> 显示答案</p>
+                  <p><span class="kbd">1</span> 不会 <span class="kbd">2</span> 模糊 <span class="kbd">3</span> 掌握</p>
+                  <p><span class="kbd">B</span> 加入错题</p>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <div class="mock-summary" id="mockSummary"></div>
+      </main>
+    </div>
+
+    <details class="panel secondary-panel">
+      <summary>题库列表与筛选</summary>
+      <div class="secondary-panel-body">
+        <div class="filters">
+          <label>搜索题目
+            <input id="searchInput" placeholder="例如 GRPO、KV cache、Kimi">
+          </label>
+          <label>难度
+            <select id="difficultyFilter">
+              <option value="">全部</option>
+              <option value="基础">基础</option>
+              <option value="进阶">进阶</option>
+              <option value="高频追问">高频追问</option>
+            </select>
+          </label>
+          <label>来源类型
+            <select id="sourceFilter">
+              <option value="">全部</option>
+              <option value="面经报告">面经报告</option>
+              <option value="网上八股">网上八股</option>
+              <option value="论文">论文</option>
+              <option value="官方文档">官方文档</option>
+              <option value="框架文档">框架文档</option>
+            </select>
+          </label>
+        </div>
+        <div id="questionList" class="question-list"></div>
+      </div>
+    </details>
+
+    <details class="panel wrongbook">
+      <summary>错题本</summary>
+      <div class="topline">
+        <div>
+          <p class="muted">收录不会、模糊、手动加入和反复错的题。建议每天先刷这里。</p>
+        </div>
+        <div class="toolbar">
+          <select id="wrongCategoryFilter"></select>
+          <button id="reviewWrongBtn" class="primary">开始错题复习</button>
+        </div>
+      </div>
+      <div id="wrongList" class="wrong-list"></div>
+    </details>
+  </div>
+
+  <script>
+    const SOURCE_LIBRARY = {
+      report: {
+        type: "面经报告", confidence: "高", title: "已整理的 88 条人才计划面经报告",
+        urls: [{ label: "本地面经报告", url: "talent_plan_internship_interview_50_report.html" }],
+        checks: ["面经只用于校准问法和流程，不作为算法事实来源。", "项目答辩题要落到问题定义、实验设计、成本、失败案例和业务验收。"]
+      },
+      web: {
+        type: "网上八股", confidence: "中", title: "公开八股检索用于发现问法",
+        urls: [
+          { label: "Nucleus Sampling arXiv 1904.09751", url: "https://arxiv.org/abs/1904.09751" },
+          { label: "RoFormer arXiv 2104.09864", url: "https://arxiv.org/abs/2104.09864" },
+          { label: "ALiBi arXiv 2108.12409", url: "https://arxiv.org/abs/2108.12409" },
+          { label: "RAG Evaluation Survey arXiv 2405.07437", url: "https://arxiv.org/abs/2405.07437" }
+        ],
+        checks: ["网上八股只用于补齐高频问法，标准答案必须回到论文、官方文档或可复现实现。", "采样题要讲排序、截断候选集、概率重归一、随机种子和 logprob 返回。"]
+      },
+      sampling: {
+        type: "论文", confidence: "高", title: "Nucleus Sampling / Decoding",
+        urls: [{ label: "arXiv 1904.09751", url: "https://arxiv.org/abs/1904.09751" }],
+        checks: ["top-p 不是固定保留 k 个 token，而是保留累计概率达到 p 的动态候选集合。", "截断后必须对候选概率重归一，再按随机种子采样并映射回原 token id。", "temperature 先缩放 logits，top-k/top-p 再裁剪候选集，二者共同影响多样性和稳定性。"]
+      },
+      transformer: {
+        type: "论文", confidence: "高", title: "Attention Is All You Need",
+        urls: [{ label: "arXiv 1706.03762", url: "https://arxiv.org/abs/1706.03762" }],
+        checks: ["scaled dot-product attention 是 softmax(QK^T/sqrt(d_k))V。", "MHA 的价值是让不同 head 在不同表示子空间并行关注信息。", "位置编码负责给无循环结构注入顺序信息。"]
+      },
+      rlhf: {
+        type: "论文", confidence: "高", title: "InstructGPT / RLHF",
+        urls: [{ label: "arXiv 2203.02155", url: "https://arxiv.org/abs/2203.02155" }],
+        checks: ["RLHF 链路是 demonstration SFT、偏好排序训练 reward model、PPO 优化 policy。", "KL 到 SFT/reference policy 是防 reward hacking 和语言分布漂移的关键约束。", "InstructGPT 还使用 pretraining-mix 项缓解能力回退。"]
+      },
+      dpo: {
+        type: "论文", confidence: "高", title: "Direct Preference Optimization",
+        urls: [{ label: "arXiv 2305.18290", url: "https://arxiv.org/abs/2305.18290" }],
+        checks: ["DPO 把带 KL 约束的 RLHF 目标重参数化为偏好分类损失。", "DPO 不需要在线 rollout 和显式 reward model，但依赖 pairwise preference 的质量。", "beta 控制相对 reference policy 的保守程度。"]
+      },
+      grpo: {
+        type: "论文", confidence: "高", title: "DeepSeekMath / GRPO",
+        urls: [
+          { label: "arXiv 2402.03300", url: "https://arxiv.org/abs/2402.03300" },
+          { label: "TRL GRPOTrainer", url: "https://huggingface.co/docs/trl/main/en/grpo_trainer" }
+        ],
+        checks: ["GRPO 对同一 prompt 采样 group completions，用组内 reward 相对值估计 advantage。", "GRPO 省掉 value model，降低内存和训练复杂度。", "全 0/全 1 group 会导致 reward std 过低和有效梯度弱。"]
+      },
+      dapo: {
+        type: "论文", confidence: "高", title: "DAPO",
+        urls: [{ label: "arXiv 2503.14476", url: "https://arxiv.org/abs/2503.14476" }],
+        checks: ["DAPO 核心是 decoupled clip 和 dynamic sampling，目标是保留有效训练信号。", "长 CoT 场景要关注 token-level loss、overlong filtering、clip-high 和 reward 稀疏。", "动态采样主要处理过易、过难或全同 reward 的 prompt。"]
+      },
+      rag: {
+        type: "论文", confidence: "高", title: "Retrieval-Augmented Generation",
+        urls: [
+          { label: "arXiv 2005.11401", url: "https://arxiv.org/abs/2005.11401" },
+          { label: "RAG Evaluation Survey arXiv 2405.07437", url: "https://arxiv.org/abs/2405.07437" }
+        ],
+        checks: ["RAG 结合参数化模型记忆和非参数化外部检索记忆。", "评估要拆 retrieval relevance/recall、generation faithfulness 和最终 answer correctness。", "RAG 不能彻底消除幻觉，风险来自召回缺失、证据冲突、引用不忠实和上下文投毒。"]
+      },
+      agent: {
+        type: "论文/官方文档", confidence: "高", title: "LLM Agents / ReAct / Toolformer / MCP",
+        urls: [
+          { label: "LLM Agents Survey arXiv 2308.11432", url: "https://arxiv.org/abs/2308.11432" },
+          { label: "ReAct arXiv 2210.03629", url: "https://arxiv.org/abs/2210.03629" },
+          { label: "Toolformer arXiv 2302.04761", url: "https://arxiv.org/abs/2302.04761" },
+          { label: "SWE-bench arXiv 2310.06770", url: "https://arxiv.org/abs/2310.06770" },
+          { label: "MCP Architecture", url: "https://modelcontextprotocol.io/docs/learn/architecture" }
+        ],
+        checks: ["Agent 回答要拆 state、action、observation、memory、planner、tool executor 和 termination。", "ReAct 的关键是 reasoning trace 与 action 交替，工具反馈用于修正后续计划。", "MCP 是 JSON-RPC 客户端-服务器协议，核心 primitives 是 tools、resources、prompts。", "SWE-bench 类任务考查真实仓库修改、环境执行、长上下文和失败恢复。", "工具系统安全要覆盖权限、参数校验、沙箱、审计、prompt injection 和 tool poisoning。"]
+      },
+      vllm: {
+        type: "论文/官方文档", confidence: "高", title: "PagedAttention / vLLM",
+        urls: [
+          { label: "arXiv 2309.06180", url: "https://arxiv.org/abs/2309.06180" },
+          { label: "vLLM Docs", url: "https://docs.vllm.ai/en/latest/" }
+        ],
+        checks: ["PagedAttention 把 KV cache 切成块，用 block table 映射逻辑块到物理块，缓解碎片和预留浪费。", "vLLM 提升吞吐主要依赖高效 KV 管理、continuous batching、prefix caching 和 serving 调度。", "回答系统题要区分 prefill 与 decode，两者瓶颈不同。"]
+      },
+      flash: {
+        type: "论文", confidence: "高", title: "FlashAttention",
+        urls: [{ label: "arXiv 2205.14135", url: "https://arxiv.org/abs/2205.14135" }],
+        checks: ["FlashAttention 是精确 attention，不是近似 attention。", "核心是 IO-aware tiling，减少 HBM 和 SRAM 之间的读写。", "收益常体现在长序列训练和 attention 中间矩阵内存占用。"]
+      },
+      speculative: {
+        type: "论文", confidence: "高", title: "Speculative Decoding",
+        urls: [{ label: "arXiv 2211.17192", url: "https://arxiv.org/abs/2211.17192" }],
+        checks: ["speculative decoding 用 draft model 先提议多个 token，再由 target model 并行验证。", "接受率取决于 draft 与 target 分布接近程度。", "标准算法通过修正的 rejection sampling 保持目标模型分布不变。"]
+      },
+      lora: {
+        type: "论文", confidence: "高", title: "LoRA",
+        urls: [{ label: "arXiv 2106.09685", url: "https://arxiv.org/abs/2106.09685" }],
+        checks: ["LoRA 冻结原权重，只训练低秩矩阵 A、B 表示权重增量。", "优势是显著减少可训练参数和优化器状态，推理时可合并 adapter。", "风险是 rank、target modules 和数据分布不当会限制容量。"]
+      },
+      qlora: {
+        type: "论文", confidence: "高", title: "QLoRA",
+        urls: [{ label: "arXiv 2305.14314", url: "https://arxiv.org/abs/2305.14314" }],
+        checks: ["QLoRA 把冻结基座量化到 4-bit，并通过 LoRA adapter 反传。", "关键技术包括 NF4、double quantization 和 paged optimizers。", "要区分存储/加载量化与训练时激活、adapter、optimizer 的显存。"]
+      },
+      zero: {
+        type: "论文/官方文档", confidence: "高", title: "ZeRO / DeepSpeed",
+        urls: [
+          { label: "arXiv 1910.02054", url: "https://arxiv.org/abs/1910.02054" },
+          { label: "DeepSpeed ZeRO Docs", url: "https://deepspeed.readthedocs.io/en/latest/zero3.html" }
+        ],
+        checks: ["ZeRO-1 分片 optimizer states，ZeRO-2 再分片 gradients，ZeRO-3 进一步分片 parameters。", "ZeRO/FSDP 节省显存的代价是 all-gather、reduce-scatter、通信重叠和 checkpoint 复杂度。", "显存估算要拆参数、梯度、优化器状态、激活、临时 buffer 和通信 bucket。"]
+      },
+      ray: {
+        type: "论文/框架文档", confidence: "高", title: "Ray / verl",
+        urls: [
+          { label: "Ray arXiv 1712.05889", url: "https://arxiv.org/abs/1712.05889" },
+          { label: "verl Docs", url: "https://verl.readthedocs.io/en/latest/" }
+        ],
+        checks: ["Ray 适合把 rollout、reward、trainer 等异构任务组织成分布式 actor 和 task。", "verl 类系统重点是训练和生成解耦、资源调度、vLLM rollout、日志和可复现配置。"]
+      },
+      sglang: {
+        type: "论文", confidence: "高", title: "SGLang",
+        urls: [{ label: "arXiv 2312.07104", url: "https://arxiv.org/abs/2312.07104" }],
+        checks: ["SGLang 关注结构化生成程序和高效 serving runtime。", "可和 vLLM 一起讨论 batch、cache、并发和 structured output。"]
+      },
+      llava: {
+        type: "论文", confidence: "高", title: "LLaVA",
+        urls: [{ label: "arXiv 2304.08485", url: "https://arxiv.org/abs/2304.08485" }],
+        checks: ["LLaVA 连接 vision encoder 与 LLM，通过投影层把视觉 token 对齐到语言空间。", "训练通常分视觉-语言对齐预训练和视觉指令微调两阶段。", "VLM 回答要覆盖视觉 token 预算、分辨率、幻觉和图文指令数据。"]
+      },
+      clip: {
+        type: "论文", confidence: "高", title: "CLIP",
+        urls: [{ label: "arXiv 2103.00020", url: "https://arxiv.org/abs/2103.00020" }],
+        checks: ["CLIP 用图文对比学习，把图片和文本映射到共享语义空间。", "vision tower 选择影响视觉语义质量、patch 粒度、分辨率和下游对齐难度。"]
+      },
+      vqvae: {
+        type: "论文", confidence: "高", title: "Neural Discrete Representation Learning / VQ-VAE",
+        urls: [{ label: "arXiv 1711.00937", url: "https://arxiv.org/abs/1711.00937" }],
+        checks: ["VQ-VAE 的离散 codebook 查表会阻断普通梯度，训练通常用 straight-through estimator。", "commitment loss 约束 encoder 输出贴近选中的 code，codebook loss 更新离散向量。", "常见风险是 codebook collapse，需要关注 code 使用率、重初始化和 EMA 更新策略。"]
+      },
+      diffusion: {
+        type: "论文", confidence: "高", title: "Denoising Diffusion Probabilistic Models",
+        urls: [{ label: "arXiv 2006.11239", url: "https://arxiv.org/abs/2006.11239" }],
+        checks: ["DDPM 正向过程逐步加噪，反向网络学习从噪声中去噪恢复数据分布。", "训练目标常写成预测噪声、x0 或 velocity，本质是学习反向扩散过程。", "扩散模型生成质量高，但采样步数、条件控制和时序一致性是工程代价。"]
+      },
+      kimi: {
+        type: "论文", confidence: "高", title: "Kimi K2",
+        urls: [{ label: "arXiv 2507.20534", url: "https://arxiv.org/abs/2507.20534" }],
+        checks: ["Kimi K2 是 1T total、32B activated 的 MoE，强调 agentic coding 和软件工程任务。", "技术点包括 MuonClip、QK-clip、15.5T tokens 预训练和大规模 agentic data synthesis。", "面试准备要突出长上下文、工具调用、SWE-bench 类任务和环境交互 RL。"]
+      },
+      mimo: {
+        type: "论文", confidence: "高", title: "MiMo",
+        urls: [{ label: "arXiv 2505.07608", url: "https://arxiv.org/abs/2505.07608" }],
+        checks: ["MiMo-7B 强调从预训练到后训练全链路增强 reasoning potential。", "预训练包含三阶段数据混合和 MTP，后训练使用可验证数学/编程题 RL。", "代码 reward 需要关注测试难度、稀疏奖励和数据重采样稳定训练。"]
+      },
+      deepseek: {
+        type: "论文", confidence: "高", title: "DeepSeek V3/R1",
+        urls: [
+          { label: "DeepSeek-V3 arXiv 2412.19437", url: "https://arxiv.org/abs/2412.19437" },
+          { label: "DeepSeek-R1 arXiv 2501.12948", url: "https://arxiv.org/abs/2501.12948" },
+          { label: "DeepSeekMath arXiv 2402.03300", url: "https://arxiv.org/abs/2402.03300" }
+        ],
+        checks: ["DeepSeek-V3 采用 MLA、DeepSeekMoE、auxiliary-loss-free load balancing 和 MTP。", "DeepSeek-R1 展示了大规模 RL 激发推理能力，R1-Zero 不经 SFT 但有可读性和语言混杂问题。", "DeepSeekMath 引入 GRPO，用组内相对优势替代 value model。"]
+      },
+      qwen: {
+        type: "论文", confidence: "高", title: "Qwen2.5 / Qwen2.5-Coder",
+        urls: [
+          { label: "Qwen2.5 arXiv 2412.15115", url: "https://arxiv.org/abs/2412.15115" },
+          { label: "Qwen2.5-Coder arXiv 2409.12186", url: "https://arxiv.org/abs/2409.12186" },
+          { label: "Qwen2.5-1M arXiv 2501.15383", url: "https://arxiv.org/abs/2501.15383" }
+        ],
+        checks: ["Qwen2.5 强调 18T token 预训练、复杂 SFT 和多阶段 RL。", "Qwen2.5-Coder 继续预训练超过 5.5T code tokens，并保留通用和数学能力。", "Qwen2.5-1M 可用于长上下文和推理系统问题，关注 sparse attention、chunked prefill 和长数据合成。"]
+      },
+      zhipu: {
+        type: "论文", confidence: "高", title: "GLM-4.5 / GLM-4.5V",
+        urls: [
+          { label: "GLM-4.5 arXiv 2508.06471", url: "https://arxiv.org/abs/2508.06471" },
+          { label: "GLM-4.5V arXiv 2507.01006", url: "https://arxiv.org/abs/2507.01006" }
+        ],
+        checks: ["GLM-4.5 是 MoE ARC 模型，关注 agentic、reasoning、coding。", "GLM-4.5 支持 thinking 和 direct response 两种模式，并经过多阶段训练和 RL。", "GLM-4.5V/4.1V-Thinking 使用 RLCS 强化 STEM、视频、grounding、GUI Agent 和长文档理解。"]
+      }
+    };
+
+    const CATEGORIES = [
+      { id: "post", label: "后训练 RL", target: 40 },
+      { id: "agent", label: "Agent/RAG", target: 35 },
+      { id: "infer", label: "推理系统", target: 25 },
+      { id: "train", label: "训练系统与数据", target: 25 },
+      { id: "vlm", label: "多模态/VLM", target: 15 },
+      { id: "project", label: "项目/论文答辩", target: 20 },
+      { id: "company", label: "公司专项", target: 15 },
+      { id: "coding", label: "Coding 八股", target: 5 }
+    ];
+
+    const HOOKS = {
+      post: "简历连接：当前方向是大模型后训练和 Agentic RL，可以把问题落到 reward、rollout、评测和训练稳定性四个环节。",
+      agent: "简历连接：重点关注工具调用轨迹、RAG 可靠性和多步任务成功率，可以把 Agent 问题拆成状态、动作、观察和奖励。",
+      infer: "简历连接：推理系统问题可以和 KV cache、batching、吞吐/延迟权衡联系起来，说明哪些优化真正影响成本。",
+      train: "简历连接：训练系统问题可以从参数、梯度、优化器状态、激活和通信开销拆显存，再解释并行或 PEFT 策略选择。",
+      vlm: "简历连接：多模态问题可以拆成视觉编码、跨模态对齐、指令数据、评测和幻觉控制，不只停留在 LLaVA 架构名词。",
+      project: "简历连接：科研叙事要讲成问题定义、核心假设、方法、评测、失败案例和下一步，而不是只报结果。",
+      company: "简历连接：回答要对齐具体团队，腾讯偏项目和答辩，字节偏训练方案，Kimi/DeepSeek/MiMo/智谱偏模型技术路线。",
+      coding: "简历连接：先讲输入输出和复杂度，再写最小正确版本，最后补充工程里如何验证边界。"
+    };
+
+    const BANK = {
+      post: [
+        ["SFT vs continued SFT", "SFT 和 continued SFT 的区别是什么，什么时候该进入 RL？", ["SFT负责把基座模型对齐到指令格式和目标风格", "continued SFT更偏垂域或能力分布迁移，重点是不要破坏通用能力", "是否进入RL看格式稳定性、任务成功率、采样多样性和可验证reward"], ["SFT loss 下降是否一定说明效果更好？", "SFT过强会不会压制RL探索？"], ["只用loss判断，不看能力评测和分布漂移"], "rlhf", "基础"],
+        ["RLHF pipeline", "完整 RLHF 流程怎么讲？", ["先做SFT得到可用策略，再采集偏好数据训练reward model", "再用PPO等算法优化策略，同时用KL约束防止偏离参考模型", "最终要用人工评测、自动benchmark和安全评测一起验收"], ["为什么不用纯监督学习？", "reward model会带来哪些偏差？"], ["只背SFT、RM、PPO三个词，不解释每步输入输出"], "rlhf", "基础"],
+        ["PPO in RLHF", "PPO 在 RLHF 里解决了什么问题？", ["PPO是带约束的策略梯度方法，目标是提升reward但限制策略更新幅度", "clip ratio和KL惩罚都在防止策略突然偏离旧策略或参考模型", "在LLM里瓶颈是rollout成本、reward噪声和训练稳定性"], ["PPO和TRPO有什么关系？", "为什么PPO需要value model？"], ["把PPO说成普通交叉熵训练"], "rlhf", "基础"],
+        ["DPO vs PPO", "DPO 和 PPO 的核心区别是什么？", ["DPO把偏好优化改写成监督式分类损失，不需要显式训练reward model再做RL rollout", "PPO更适合在线探索和复杂奖励，DPO更简单稳定但依赖偏好数据质量", "面试要说清数据、稳定性、成本和可探索性四个权衡"], ["DPO为什么能绕开reward model？", "DPO什么时候不如RL？"], ["只说DPO简单，不说它的隐含reward建模假设"], "dpo", "基础"],
+        ["GRPO", "GRPO 相比 PPO 的核心改动是什么？", ["GRPO对同一prompt采样一组答案，用组内reward均值和方差做相对优势", "它去掉value model，降低显存和训练复杂度", "适合数学、代码这类可验证任务，但对group质量和reward分布很敏感"], ["group内全0或全1怎么办？", "GRPO为什么能省显存？"], ["只背去掉value model，不解释group-relative advantage"], "grpo", "基础"],
+        ["DAPO", "DAPO 对 GRPO 做了哪些改进？", ["DAPO强调decoupled clip和dynamic sampling，核心是让有效样本进入训练", "当group全对或全错时，梯度信号弱，动态采样会筛掉或重采这类prompt", "它还关注长链推理里的稳定训练、长度控制和reward稀疏问题"], ["DAPO为什么能缓解全0全1 group？", "higher clip和overlong filtering怎么理解？"], ["把DAPO只说成换了采样器，不说训练信号质量"], "dapo", "高频追问"],
+        ["RLVR", "RLVR 和传统 RLHF 有什么不同？", ["RLVR用可验证奖励，比如数学答案、单元测试、规则校验，而不是主要依赖人类偏好", "它能扩展到大量自动评测任务，适合推理和代码能力", "风险是reward过窄、格式投机、泛化不足，所以要配合多样任务和人工评估"], ["RLVR为什么能训练推理？", "如何避免模型只学会刷测试？"], ["只说可验证，不说验证器覆盖率和reward hacking"], "deepseek", "基础"],
+        ["Reward model", "reward model 怎么训练，主要风险是什么？", ["输入通常是prompt和response，训练目标是让偏好答案得分更高", "风险是标注偏差、长度偏好、分布外泛化差和被policy exploit", "落地时要做held-out偏好集、长度归一、adversarial case和在线校准"], ["reward model和verifier有什么区别？", "如何处理多维偏好？"], ["把reward当成真实目标，不承认它只是代理指标"], "rlhf", "进阶"],
+        ["Rule reward vs model reward", "规则奖励和模型奖励怎么取舍？", ["规则奖励可靠、便宜、可复现，适合数学、代码、格式和工具执行结果", "模型奖励覆盖开放任务，但会引入reward model偏差和被攻击风险", "实际系统常混合使用，并用权重、门控或分阶段训练控制风险"], ["helpfulness和harmlessness用什么reward？", "规则奖励会不会太稀疏？"], ["认为一种reward能覆盖所有任务"], "rlhf", "基础"],
+        ["KL penalty", "后训练里的 KL 惩罚起什么作用？", ["KL约束新策略不要偏离参考模型太远，避免reward hacking和语言能力退化", "KL过大模型学不动，过小容易跑偏，所以要看reward、长度、拒答率和benchmark", "面试里要说它是稳定性和能力保持的旋钮"], ["reference model选SFT还是base？", "KL系数如何调？"], ["把KL只当正则项，不讲策略漂移"], "rlhf", "基础"],
+        ["Entropy collapse", "RL 训练中熵崩溃是什么，怎么解决？", ["熵崩溃是策略过早变得确定，输出多样性和探索能力下降", "常见原因是reward过强、KL太弱、temperature太低或数据太窄", "可以加熵正则、提高采样温度、调clip和KL、扩大任务多样性"], ["DAPO里higher clip为什么有帮助？", "熵和pass@k是什么关系？"], ["只说调温度，不分析reward和策略更新"], "dapo", "高频追问"],
+        ["Reward hacking", "reward hacking 在 LLM 后训练里有哪些表现？", ["模型利用奖励漏洞而非真正解决任务，比如格式投机、过长推理、套模板、刷单元测试", "根因是reward和真实目标不一致，或评测覆盖不足", "解决要靠多奖励、多评测、人工抽检、对抗样本和训练过程监控"], ["代码任务如何防止只过公开测试？", "RAG任务的reward hacking是什么？"], ["把reward hacking只理解成作弊，不讲代理目标错位"], "rlhf", "基础"],
+        ["Rejection sampling", "RFT 或 rejection sampling fine-tuning 怎么用？", ["对同一prompt采样多条推理轨迹，用答案验证器筛出正确样本再做SFT", "它成本低、稳定，但受base模型可采到正确答案的上限限制", "常用在RL前冷启动或构造高质量推理数据"], ["为什么RFT不等于RL？", "采样温度怎么选？"], ["忽视错误轨迹和难题覆盖，导致数据太容易"], "deepseek", "基础"],
+        ["Process reward vs outcome reward", "process reward 和 outcome reward 的区别是什么？", ["outcome reward只看最终答案，便宜但信用分配弱", "process reward评价中间步骤，能指导推理链，但标注和验证更难", "复杂任务可用过程约束加最终验证，避免模型走对答案但过程不可控"], ["过程奖励会不会鼓励冗长CoT？", "工具调用任务怎么做过程奖励？"], ["把过程奖励等同于展示思维链"], "rlhf", "进阶"],
+        ["DPO data quality", "DPO 训练前如何评价数据质量？", ["看偏好对是否真实可区分，chosen和rejected差异是否对应目标能力", "看长度、风格、难度、领域分布和重复样本，避免模型学捷径", "最好用小规模训练、held-out胜率和人工抽检验证"], ["chosen更长会有什么问题？", "偏好数据噪声怎么处理？"], ["只看数据量，不看偏好边际和噪声"], "dpo", "高频追问"],
+        ["Preference data construction", "偏好数据怎么构造才适合后训练？", ["先定义目标能力和失败类型，再让多个模型或同模型多采样生成候选", "偏好标注要控制长度、格式、事实性和安全维度", "最后按难度和领域分层，避免只有简单偏好对"], ["pairwise和listwise偏好有什么区别？", "AI标注可不可信？"], ["先生成再随便打分，没有任务定义"], "dpo", "基础"],
+        ["All-zero group", "GRPO 里一个 group 全是 0 或全是 1 会怎样？", ["组内reward方差接近0，相对优势没有有效区分，梯度信号弱", "全0说明任务过难或reward太稀疏，全1说明任务过易", "解决靠动态采样、难度分桶、提高采样数或改reward粒度"], ["为什么DAPO会过滤这类prompt？", "提高group size一定有效吗？"], ["只说加样本，不说难度分布"], "dapo", "高频追问"],
+        ["Rollout engine", "后训练系统里 rollout engine 负责什么？", ["它负责批量采样模型响应或轨迹，是RL训练的数据生产环节", "要处理并发、KV cache、采样参数、工具调用环境和reward回传", "用vLLM/SGLang加速rollout能显著影响训练吞吐"], ["verl里rollout和trainer如何协作？", "rollout慢会带来什么瓶颈？"], ["只把rollout理解成生成文本"], "vllm", "进阶"],
+        ["On-policy vs off-policy", "LLM RL 里 on-policy 和 off-policy 怎么理解？", ["on-policy用当前策略采样的数据更新当前策略，分布匹配但成本高", "off-policy复用旧数据更省，但策略分布偏移会影响稳定性", "GRPO/PPO通常更偏on-policy，DPO更像离线偏好优化"], ["为什么PPO不能无限复用旧rollout？", "离线RL在LLM里难点是什么？"], ["把所有后训练都叫监督学习"], "rlhf", "基础"],
+        ["Temperature in RL", "采样 temperature 对 RL 训练有什么影响？", ["temperature影响探索和候选多样性，太低会导致group同质化，太高会增加低质样本", "对RLVR来说它影响能否采到正确轨迹和reward方差", "通常要结合任务难度、pass@k和训练稳定性调"], ["top-p和temperature怎么一起调？", "训练和评测温度要一样吗？"], ["只说温度越高越随机"], "sampling", "基础"],
+        ["Length bias", "后训练为什么容易出现长度偏置？", ["偏好标注和reward model常把长答案误判为更充分", "RL也可能通过更长推理获得更高表面reward", "要用长度归一、明确rubric、overlong penalty和分布监控控制"], ["R1类模型为什么思考长度会变长？", "什么时候长推理是好事？"], ["把长答案一概当坏事"], "rlhf", "高频追问"],
+        ["Reference model", "reference model 在 RLHF/DPO 里有什么作用？", ["reference model提供策略锚点，防止模型为追reward偏离原能力和语言分布", "PPO用KL对齐reference，DPO目标里也隐含reference policy", "选择SFT还是base取决于要保留的行为分布"], ["reference冻结吗？", "reference太弱会怎样？"], ["忽略reference导致无法解释KL"], "dpo", "基础"],
+        ["Advantage normalization", "为什么要做 advantage normalization？", ["优势归一化让不同prompt或group的reward尺度更可比", "GRPO里组内标准化是核心，能去掉prompt难度的绝对差异", "风险是方差太小或极端reward导致数值不稳定"], ["组内std为0怎么办？", "normalize会不会改变优化目标？"], ["把归一化当成纯工程细节"], "grpo", "进阶"],
+        ["Clip ratio", "PPO/GRPO 的 clip ratio 怎么解释？", ["clip限制新旧策略概率比，防止单步更新过大", "ratio超过区间时目标函数被截断，稳定性提升但学习速度可能下降", "clip范围要和KL、reward尺度和任务难度一起调"], ["clip太大或太小会怎样？", "DAPO decoupled clip解决什么？"], ["只背公式，不说它约束策略更新"], "dapo", "基础"],
+        ["Multi-turn RL", "多轮对话或Agent任务怎么做RL？", ["把一次任务视为trajectory，包含多轮状态、动作、工具调用和观察", "reward可以放在最终成功率，也可以加过程奖励做信用分配", "难点是长horizon、环境不确定、成本和失败归因"], ["credit assignment怎么做？", "多轮任务如何避免只优化最后一句？"], ["把多轮RL当单轮response打分"], "agent", "进阶"],
+        ["Tool-use RL", "如何用 RL 优化工具调用？", ["把工具选择、参数生成和是否停止都看成动作", "reward来自工具执行成功、最终答案正确、成本和安全约束", "训练要记录轨迹，并评估任务成功率而不是只看文本相似度"], ["tool router能不能单独训练？", "工具错误会不会污染reward？"], ["只训练function call格式，不评估任务完成"], "agent", "高频追问"],
+        ["Self-evolution", "大模型自进化训练闭环怎么讲？", ["核心是模型生成任务或解法，再用验证器、评审模型或人类筛选高质量样本", "筛出的数据回流到SFT/RL，形成能力迭代", "关键风险是自我强化错误、数据坍缩和评测泄漏"], ["如何保证新数据真的有增益？", "self-play和self-instruct有什么区别？"], ["只说自动生成数据，不说过滤和验收"], "agent", "进阶"],
+        ["Synthetic data", "合成数据在后训练中怎么用？", ["合成数据能扩大覆盖和难度，尤其用于推理、工具调用和垂域任务", "必须有过滤、去重、难度分层和人工抽检", "最好用小模型或基线验证它对目标benchmark和真实任务的增益"], ["合成数据会不会污染评测？", "如何避免模型风格自循环？"], ["相信大模型生成的一定高质量"], "rlhf", "基础"],
+        ["Post-training eval", "后训练模型怎么评估？", ["分能力、对齐、安全和业务四类指标", "推理看AIME/LiveCodeBench等，Agent看任务成功率和工具调用轨迹，RAG看faithfulness和citation", "还要看成本、延迟、拒答率和回归测试"], ["为什么单一benchmark不够？", "如何设计线上AB？"], ["只报一个榜单分数"], "web", "基础"],
+        ["Catastrophic forgetting", "后训练如何避免灾难性遗忘？", ["混入通用数据或pretraining loss可以保持语言和知识能力", "KL/reference约束能限制策略漂移", "评测上要有通用能力回归集，而不是只看目标任务"], ["LoRA能否减少遗忘？", "继续训练为什么会掉通用能力？"], ["没有回归集就说没有遗忘"], "rlhf", "进阶"],
+        ["Safety reward", "helpfulness 和 harmlessness 奖励如何平衡？", ["helpfulness追求回答有用，harmlessness限制危险或违规输出", "冲突时通常用分层策略、拒答数据、安全reward和人工评测平衡", "要避免模型过度拒答或为了有用而越界"], ["为什么安全训练会影响正常能力？", "拒答率怎么评估？"], ["只追求安全，不看可用性"], "rlhf", "基础"],
+        ["Verifier", "verifier 在推理模型训练里有什么作用？", ["verifier判断最终答案或中间步骤是否满足规则，是RLVR和RFT的关键", "数学可用答案校验，代码可用单元测试，工具任务可用环境反馈", "verifier覆盖不足会导致模型学会钻漏洞"], ["verifier和reward model区别？", "代码单测不完备怎么办？"], ["把verifier当绝对真值"], "deepseek", "基础"],
+        ["Math/code reward", "数学和代码任务的奖励怎么设计？", ["数学常用最终答案匹配、格式校验和必要的过程约束", "代码常用编译、单元测试、隐藏测试和复杂度检查", "要防止格式投机、hard-coded测试和过长推理"], ["代码reward稀疏怎么办？", "数学答案等价性怎么判断？"], ["只看字符串完全匹配"], "grpo", "基础"],
+        ["RL compute bottleneck", "大规模 LLM RL 的计算瓶颈在哪里？", ["rollout生成成本高，尤其长链推理和多采样group", "训练还要跑reward、logprob、KL和反向传播", "系统上要优化vLLM rollout、Ray资源调度、batching和异步流水"], ["为什么RL比SFT贵？", "显存瓶颈和吞吐瓶颈分别是什么？"], ["只说GPU不够，不拆rollout和训练"], "ray", "进阶"],
+        ["GRPO trainer", "一个 GRPO trainer 最少有哪些模块？", ["policy模型生成group responses并计算logprob", "reward函数给每个response打分，组内归一得到advantage", "loss用ratio、clip、KL等项更新policy，并记录reward、KL、长度和通过率"], ["如何接vLLM rollout？", "怎么处理padding和mask？"], ["只会写公式，不会说数据流"], "grpo", "高频追问"],
+        ["DPO overfitting", "DPO 容易过拟合哪些东西？", ["过拟合偏好数据的长度、格式、模板和标注者风格", "如果chosen/rejected差异不代表真实能力，模型会学捷径", "要做难负例、长度控制、跨域验证和人工抽检"], ["如何构造hard negative？", "DPO beta怎么影响保守程度？"], ["只调学习率，不处理数据问题"], "dpo", "进阶"],
+        ["IPO KTO SimPO", "IPO、KTO、SimPO 这类方法和 DPO 怎么比较？", ["它们都在简化或改造偏好优化目标，减少PPO式RL复杂度", "差异主要在偏好数据形式、reference依赖、长度偏置和优化稳定性", "面试里不用背所有公式，要讲清适用数据和风险"], ["什么时候用KTO？", "SimPO为什么讨论reference-free？"], ["堆名词但不讲目标函数解决什么痛点"], "web", "进阶"],
+        ["Online RL vs offline preference", "online RL 和 offline preference optimization 怎么取舍？", ["offline方法便宜稳定，适合已有偏好数据和单轮响应优化", "online RL能探索新策略产生的数据，适合推理、工具、环境交互任务", "选择取决于reward可靠性、探索需求、算力和安全风险"], ["Agent任务为什么更需要online？", "离线偏好能不能训练工具调用？"], ["把所有RL都等同于PPO"], "rlhf", "高频追问"],
+        ["When not to RL", "什么情况下不应该急着做 RL？", ["如果SFT基础能力和格式都不稳定，RL会放大噪声", "如果reward不可验证或评测不可靠，RL可能优化错目标", "数据质量问题、业务定义不清和算力不足时，先做数据和评测闭环更稳"], ["老板要求上RL怎么办？", "怎么证明SFT还没到RL阶段？"], ["为了追热点而忽略评测"], "report", "高频追问"],
+        ["Agent RL pitfalls", "用 RL 训练 Agent 最容易踩什么坑？", ["reward稀疏且容易错配真实目标", "环境和工具不稳定会让训练信号噪声很大", "没有可复现harness和安全边界时，训练结果无法解释"], ["如何先做最小闭环？", "哪些Agent任务不适合RL？"], ["先上RL再补评测"], "agent", "高频追问"]
+      ],
+      agent: [
+        ["RAG baseline", "一个标准 RAG 系统怎么拆？", ["离线把文档清洗、切块、向量化并入库", "在线做query改写、召回、重排、上下文拼接和生成", "验收要看召回率、faithfulness、引用质量、延迟和成本"], ["RAG和微调怎么选？", "RAG为什么不能完全解决幻觉？"], ["只说向量数据库，不说评测"], "rag", "基础"],
+        ["Chunking", "RAG 里 chunk size 和 overlap 怎么选？", ["chunk太小会丢上下文，太大召回噪声和成本会上升", "overlap能保留边界信息，但会增加重复和索引成本", "应按文档结构、查询类型和召回评测调，而不是固定经验值"], ["表格和代码文档怎么切？", "层级chunk有什么用？"], ["只按token数切，不保留结构"], "rag", "基础"],
+        ["Embedding model", "如何选择 embedding 模型？", ["看目标语言、领域、短长文本匹配、吞吐和向量维度成本", "要用自己的查询和文档做召回评测，而不是只看公开榜单", "必要时用混合检索和reranker弥补embedding不足"], ["中文垂域怎么评估embedding？", "embedding要不要微调？"], ["只看模型名，不做数据集评估"], "rag", "基础"],
+        ["Reranker", "reranker 在 RAG 里解决什么问题？", ["初召回追求高recall，reranker负责更精细排序，提高上下文精度", "cross-encoder通常更准但更慢，适合top-k候选重排", "要用端到端answer quality和延迟一起评估"], ["reranker和embedding区别？", "rerank top多少合适？"], ["只加reranker不控制延迟"], "rag", "基础"],
+        ["Hybrid search", "BM25 和向量检索为什么要混合？", ["BM25擅长关键词、实体、编号和精确匹配", "向量检索擅长语义匹配和同义表达", "混合可以提高召回鲁棒性，后面再用reranker统一排序"], ["如何融合分数？", "什么时候BM25比向量更重要？"], ["认为向量检索完全替代关键词"], "rag", "基础"],
+        ["Hallucination", "RAG 如何降低幻觉，为什么不能彻底消除？", ["RAG给模型提供外部证据，减少依赖参数记忆", "但检索错、上下文冲突、模型误读证据都会导致幻觉", "要加引用、拒答、冲突检测、fact checking和人工抽检"], ["faithfulness怎么评估？", "检索到错文档怎么办？"], ["把RAG当成事实正确保证"], "rag", "基础"],
+        ["Citation", "RAG 答案里的引用怎么做才可信？", ["引用应绑定到具体片段，而不是只列文档名", "生成时要约束答案只能基于证据，并检查每个claim是否有support", "对无证据内容要拒答或标注不确定"], ["citation precision怎么测？", "模型编造引用怎么办？"], ["先生成再随便挂来源"], "rag", "进阶"],
+        ["Query rewriting", "query rewrite 在 RAG/Agent 里有什么作用？", ["它把用户问题改写成更适合检索或工具调用的查询", "多轮场景要补全省略指代和上下文约束", "风险是改写过度导致意图漂移，所以要保留原始query做兜底"], ["HyDE是什么？", "多query召回怎么去重？"], ["把改写当成美化语句"], "rag", "基础"],
+        ["Agent loop", "LLM Agent 的基本循环是什么？", ["Agent循环是观察状态、规划、选择动作、执行工具、接收观察并继续", "核心数据结构是trajectory，不是一轮文本回答", "评估要看任务成功率、成本、步数、失败恢复和安全"], ["ReAct怎么嵌入这个循环？", "什么时候需要planner？"], ["把Agent等同于prompt chaining"], "agent", "基础"],
+        ["Tool schema", "工具调用 schema 设计要注意什么？", ["schema要清晰描述参数、类型、约束和错误返回", "参数越开放越容易错，越严格越容易限制能力", "要配合few-shot、校验器和执行反馈提升成功率"], ["function calling为什么会填错参数？", "工具返回太长怎么办？"], ["只写工具名，不定义错误语义"], "agent", "基础"],
+        ["Function calling vs MCP", "function calling 和 MCP 有什么区别？", ["function calling是模型和工具接口的调用格式", "MCP更像标准化的工具/资源/上下文协议，方便不同客户端和服务连接", "面试里可把MCP理解为让工具生态可复用、可治理的接口层"], ["MCP解决了哪些工程问题？", "工具权限如何控制？"], ["把MCP说成某一种prompt技巧"], "agent", "基础"],
+        ["MCP architecture", "一个 MCP 工具系统怎么设计权限和安全？", ["工具按能力分组，明确读写权限、参数校验和审计日志", "敏感操作要确认、限流、沙箱和最小权限", "模型输出不能直接执行高风险动作，需要策略层拦截"], ["如何防prompt injection？", "工具返回恶意内容怎么办？"], ["让模型拥有无限工具权限"], "agent", "进阶"],
+        ["Memory", "Agent memory 分哪几类？", ["短期memory保留当前任务上下文，长期memory存用户偏好、经验和知识", "工作记忆服务当前规划，检索记忆用于跨会话召回", "关键是写入策略、遗忘策略、隐私和评测"], ["memory和RAG区别？", "错误记忆怎么纠正？"], ["把所有历史消息都塞上下文"], "agent", "基础"],
+        ["Planning", "Agent planning 有哪些常见方法？", ["简单任务可以直接ReAct边想边做", "复杂任务可先分解子目标，再逐步执行和检查", "要防止过度规划和计划不随环境反馈更新"], ["Tree-of-thought和planner有什么关系？", "计划失败怎么恢复？"], ["计划一次后不再根据观察修正"], "agent", "基础"],
+        ["ReAct", "ReAct 的核心思想是什么？", ["ReAct把reasoning和acting交替组织，让模型边推理边调用工具", "好处是每步都能用环境观察修正下一步", "风险是推理轨迹冗长、工具误用和观察污染"], ["ReAct和CoT有什么区别？", "如何评估ReAct轨迹？"], ["只把ReAct当提示词模板"], "agent", "基础"],
+        ["Reflection", "Reflection/self-correction 在 Agent 里怎么用？", ["任务失败后让模型总结失败原因并修正计划", "可以基于工具错误、验证器失败或人工反馈触发", "要防止无根据自我辩解和反复循环，最好有外部验证"], ["反思一定有效吗？", "如何控制反思成本？"], ["让模型自己说改好了但不验证"], "agent", "进阶"],
+        ["Multi-agent", "多智能体系统怎么设计？", ["先确认是否真的需要多Agent，复杂任务才拆角色和通信", "设计要明确角色、共享状态、冲突解决和终止条件", "评估要看协作是否提升成功率，而不只是日志更热闹"], ["多Agent会带来什么副作用？", "如何避免互相污染？"], ["为复杂而复杂，增加不可控通信"], "agent", "进阶"],
+        ["Credit assignment", "Agentic RL 的 credit assignment 难在哪里？", ["最终成功或失败往往由多步工具调用共同造成", "需要把奖励分配到关键动作、计划和观察处理上", "可用过程奖励、轨迹回放、反事实评估和工具级指标缓解"], ["只给最终reward够不够？", "怎么找失败步骤？"], ["把失败全部归因到最后一步"], "agent", "高频追问"],
+        ["GUI Agent", "GUI Agent 和普通文本 Agent 有什么不同？", ["GUI Agent需要理解屏幕状态、元素位置和操作反馈", "动作空间包括点击、输入、滚动和等待，错误成本更高", "评估看任务完成、操作轨迹、鲁棒性和安全边界"], ["GUI grounding怎么做？", "如何处理动态页面？"], ["只把截图转文字就当GUI Agent"], "agent", "进阶"],
+        ["Browser Agent", "浏览器 Agent 如何做 harness？", ["harness要提供可控网页环境、动作API、观察日志和判分器", "要记录每步DOM、截图、工具调用和错误", "测试集要覆盖登录、搜索、表单、长任务和异常恢复"], ["Claude Code/Codex类harness怎么对比？", "如何避免真实网站不稳定？"], ["没有环境隔离就直接跑真实操作"], "agent", "高频追问"],
+        ["Harness", "从零做 Agent harness 要包含什么？", ["环境封装、动作接口、状态观察、任务集、评测器和日志系统", "还要有重放、失败归因、成本统计和安全策略", "harness质量决定能否稳定比较不同Agent策略"], ["如何设计可复现实验？", "任务成功率怎么算？"], ["只写一个脚本跑demo，不做评测"], "agent", "高频追问"],
+        ["SWE-bench", "SWE-bench 类 benchmark 考察什么？", ["它考察模型在真实代码仓库里定位问题、修改代码并通过测试的能力", "比单题代码更接近Agentic coding，因为要读仓库、理解约束和迭代验证", "评估要看resolved rate、测试通过和patch质量"], ["为什么SWE-bench难？", "coding agent如何利用工具？"], ["只把它当LeetCode"], "agent", "基础"],
+        ["Tool router", "tool router 怎么训练和评估？", ["router决定何时调用哪个工具以及参数怎么填", "训练可用监督轨迹、偏好数据或RL优化成功率和成本", "评估看工具选择准确率、最终成功率、无用调用率和错误恢复"], ["router和planner谁先谁后？", "多个工具返回冲突怎么办？"], ["只优化工具调用格式，不看任务结果"], "agent", "高频追问"],
+        ["Long task reward", "长任务 Agent 的 reward 怎么设计？", ["最终成功率是主指标，但太稀疏，需要过程指标辅助", "过程指标可以是子任务完成、工具成功、约束满足和成本控制", "要避免奖励分解后和真实目标不一致"], ["如何处理部分成功？", "成本应该进reward吗？"], ["只奖励每步看起来合理"], "agent", "进阶"],
+        ["State action observation", "把 Agent 任务写成 RL 问题时，state/action/observation 怎么定义？", ["state是任务历史和环境内部状态，observation是模型可见的信息", "action包括文本、工具调用和GUI操作", "reward来自任务结果、过程约束和成本安全指标"], ["observation不完整怎么办？", "LLM policy输出怎么映射动作？"], ["混淆state和observation"], "agent", "基础"],
+        ["Context compression", "长任务 Agent 怎么做上下文压缩？", ["保留目标、约束、已完成步骤、关键证据和未解决问题", "可用摘要、检索式记忆、结构化scratchpad和重要事件缓存", "压缩后要验证是否丢失关键信息"], ["摘要会不会引入幻觉？", "什么时候用检索替代摘要？"], ["把完整历史无限塞进prompt"], "agent", "基础"],
+        ["Skill retrieval", "上百个 skills 如何不爆上下文？", ["把skill描述向量化或建立索引，只召回当前任务相关技能", "再用reranker或router选择少量候选放进上下文", "还要记录skill版本、适用条件和失败反馈"], ["skill检索错了怎么办？", "如何评估skill router？"], ["把所有skill一次性塞给模型"], "agent", "高频追问"],
+        ["Sandbox", "Agent 调工具为什么要沙箱？", ["模型可能误操作、被prompt injection诱导或产生危险参数", "沙箱限制文件、网络、权限和资源，配合审计和确认机制", "特别是代码执行、浏览器和系统命令类工具必须最小权限"], ["如何设计审批机制？", "工具返回恶意prompt怎么办？"], ["直接让模型执行任意命令"], "agent", "基础"],
+        ["Error recovery", "Agent 工具调用失败后怎么恢复？", ["先分类错误：参数错、工具不可用、环境变了、权限不足或目标不可达", "再决定重试、换工具、查询更多信息或向用户澄清", "日志里要保留失败原因用于训练和评测"], ["什么时候停止重试？", "如何避免无限循环？"], ["失败后盲目重复同一动作"], "agent", "基础"],
+        ["Self-evolving Agent", "自进化 Agent 系统怎么闭环？", ["从失败任务中自动挖掘新案例、生成改进策略或技能", "用验证器和回放环境筛选有效改进，再写入技能库或训练数据", "必须有回归测试，防止新技能破坏旧能力"], ["如何避免自我污染？", "技能何时晋升为训练数据？"], ["只追加经验，不做回归验收"], "agent", "进阶"],
+        ["Agent evaluation", "Agent 评测为什么比普通问答难？", ["Agent有多步动作、环境状态和工具副作用，答案文本不是唯一输出", "评测要看成功率、步数、成本、轨迹合理性、安全和稳定性", "还要能重放和定位失败步骤"], ["任务成功率和用户满意度哪个更重要？", "如何做线上评测？"], ["只用LLM-as-judge看最终答案"], "agent", "基础"],
+        ["Intent understanding", "多轮 Agent 怎么做用户意图识别？", ["要从当前输入、历史上下文和任务状态里恢复真实目标", "不确定时应澄清，而不是擅自执行高风险动作", "可用意图分类、约束抽取和任务状态机辅助"], ["什么时候该问用户？", "用户目标变化怎么办？"], ["把第一轮意图固定到底"], "agent", "基础"],
+        ["RAG poisoning", "RAG/Agent 如何防 prompt injection 和知识库投毒？", ["检索内容和网页内容不能当系统指令执行", "要分离数据和指令，做来源可信度、内容过滤和工具权限隔离", "对高风险动作要二次确认和审计"], ["网页里写忽略系统提示怎么办？", "知识库被污染怎么发现？"], ["把外部文档无条件放最高优先级"], "rag", "高频追问"],
+        ["Cost latency", "Agent 系统如何控制成本和延迟？", ["减少不必要工具调用、控制检索top-k、缓存中间结果和并行可并行步骤", "按任务难度选择模型和策略，简单任务不要走复杂Agent", "指标上同时看成功率、平均步数、token、工具耗时和失败重试"], ["什么时候用小模型router？", "并行会带来什么风险？"], ["只追求成功率，不看成本"], "agent", "基础"],
+        ["Trace quality", "Agent 轨迹质量怎么判断？", ["看每步是否有明确目的、是否使用正确证据、是否能根据观察修正", "还要看有没有无效调用、循环、泄露隐私或违反安全策略", "好轨迹应该能被重放和用于训练"], ["轨迹长是否一定好？", "如何自动标注坏轨迹？"], ["只看最终答案对不对"], "agent", "进阶"]
+      ],
+      infer: [
+        ["MHA formula", "手写 MHA 前要先讲清哪些张量形状？", ["输入是batch、seq、hidden，QKV投影后拆成heads和head_dim", "attention score是Q乘K转置再除以sqrt(d)，mask后softmax乘V", "最后concat各head并过输出投影"], ["为什么要除以sqrt(d)？", "mask在哪里加？"], ["形状讲不清就直接写代码"], "transformer", "基础"],
+        ["KV cache", "KV cache 为什么能加速自回归解码？", ["解码每步只新增一个token，历史token的K和V不变，可以缓存复用", "这样每步不用重复计算历史K/V，只计算新token的QKV并和缓存做attention", "它节省计算但增加显存，显存随层数、KV heads、长度线性增长"], ["prefill和decode阶段有什么不同？", "KV cache影响训练吗？"], ["说成缓存attention score，而不是K/V"], "transformer", "基础"],
+        ["GQA MQA", "GQA/MQA 和 MHA 的区别是什么？", ["MHA每个query head都有独立K/V head，KV cache最大", "MQA多个query head共享一组K/V，GQA是折中，多个query head共享一组K/V", "它们主要减少KV cache和带宽，可能带来轻微质量损失"], ["GQA为什么适合推理？", "减少一半KV heads省什么？"], ["以为GQA减少Q计算而不是KV存取"], "transformer", "基础"],
+        ["MHA with cache", "带 KV cache 的 MHA 怎么写？", ["当前step输入先投影出q,k,v，把新k/v append到cache", "q只来自当前token，k/v来自历史cache加当前token", "attention输出当前token结果，并返回更新后的cache"], ["prefill时怎么初始化cache？", "batch中不同长度怎么处理？"], ["忘记更新cache或mask"], "transformer", "高频追问"],
+        ["Half KV cache", "如果 KV cache 减少一半，哪些计算和显存会变化？", ["显存和KV读取带宽大致按KV head数或精度下降", "Q投影、FFN和大部分非KV计算不会直接减半", "decode阶段通常更受KV带宽影响，所以长上下文收益更明显"], ["GQA减少的是哪个维度？", "prefill收益和decode收益一样吗？"], ["说所有计算都减半"], "vllm", "高频追问"],
+        ["PagedAttention", "vLLM 的 PagedAttention 解决了什么问题？", ["KV cache按块管理，逻辑连续但物理内存可不连续", "减少预分配和碎片浪费，便于更高并发和prefix共享", "核心收益是提升serving吞吐和显存利用率"], ["它改变attention数学结果吗？", "为什么像操作系统分页？"], ["把PagedAttention说成稀疏attention"], "vllm", "基础"],
+        ["Continuous batching", "continuous batching 为什么能提升吞吐？", ["请求生成长度不同，静态batch会被慢请求拖住", "continuous batching允许新请求动态加入、完成请求动态退出", "它提升GPU利用率，但调度、KV管理和延迟公平性更复杂"], ["和普通batching区别？", "对TTFT有什么影响？"], ["只说batch越大越好"], "vllm", "基础"],
+        ["Prefill decode", "prefill 和 decode 阶段有什么性能差异？", ["prefill一次处理整段prompt，计算密集，可并行度高", "decode每次生成一个token，KV读取和小矩阵操作多，更容易受带宽和调度影响", "优化手段也不同，prefill看吞吐，decode看TPOT和KV cache"], ["长prompt为什么TTFT高？", "prefill-decode disaggregation是什么？"], ["把两个阶段混为一谈"], "vllm", "基础"],
+        ["Speculative decoding", "speculative decoding 的基本原理是什么？", ["小draft模型先猜多个token，大target模型一次性验证", "接受规则保证输出分布不变或在贪心场景保持一致", "收益取决于draft质量、验证成本和接受率"], ["为什么业务上可能不达预期？", "draft模型太弱会怎样？"], ["只说小模型加速，不讲验证和接受率"], "speculative", "高频追问"],
+        ["Prefix caching", "prefix caching 适合什么场景？", ["多个请求共享长系统prompt、检索上下文或few-shot前缀时，可以复用prefill KV", "它减少TTFT和重复计算，尤其适合RAG和Agent模板", "要处理缓存命中、版本和隐私隔离"], ["和PagedAttention有什么关系？", "RAG场景如何提高命中率？"], ["忽视不同用户前缀不能乱共享"], "vllm", "基础"],
+        ["Serving quantization", "推理量化主要影响什么？", ["量化降低权重或KV cache显存和带宽，提升部署容量", "风险是精度损失，尤其影响长上下文、数学和小概率token", "要按任务评测不同bit、不同模块和延迟收益"], ["权重量化和KV量化区别？", "AWQ/GPTQ大概怎么定位？"], ["只看模型能不能跑，不看质量回归"], "web", "基础"],
+        ["FlashAttention", "FlashAttention 为什么快？", ["它不是近似attention，而是IO-aware exact attention", "通过分块在SRAM中计算，减少HBM读写和中间attention矩阵存储", "训练和prefill长序列收益明显"], ["FlashAttention改变复杂度吗？", "和PagedAttention区别？"], ["说成稀疏或近似attention"], "flash", "基础"],
+        ["Attention complexity", "self-attention 的复杂度怎么讲？", ["标准attention对序列长度是O(n^2)计算和显存中间量", "训练时要保存激活，长上下文成本更高", "推理decode有KV cache后每步对历史长度是线性attention"], ["为什么prefill仍然贵？", "长上下文怎么优化？"], ["只背O(n^2)，不分训练和推理"], "transformer", "基础"],
+        ["RoPE", "RoPE 的直观解释是什么？", ["RoPE把位置信息以旋转方式注入Q/K，让attention score包含相对位置信息", "它适合decoder-only模型，并支持一定长度外推技巧", "高频位置维度更敏感，长上下文扩展要做缩放或插值"], ["RoPE会不会改变语义？", "为什么只作用在Q/K？"], ["把RoPE说成普通可学习embedding"], "transformer", "基础"],
+        ["ALiBi", "ALiBi 和 RoPE 的区别是什么？", ["ALiBi给attention score加距离相关bias，不显式学习位置embedding", "RoPE通过旋转Q/K表达相对位置", "ALiBi外推简单，RoPE在现代LLM里更常见且有多种扩展"], ["为什么ALiBi适合外推？", "两者能混用吗？"], ["只会背名词，不讲加在哪里"], "web", "进阶"],
+        ["Long context", "长上下文模型为什么难？", ["attention计算和KV cache随长度增长，训练和推理成本都高", "模型还会遇到位置外推、信息稀释和中间遗忘", "解决包括RoPE scaling、稀疏attention、检索、压缩和训练数据覆盖"], ["needle in a haystack说明什么？", "长上下文和RAG怎么选？"], ["认为扩context window就等于会用长上下文"], "transformer", "进阶"],
+        ["TTFT TPOT", "TTFT、TPOT、吞吐分别是什么？", ["TTFT是首token延迟，主要受排队和prefill影响", "TPOT是每token生成时间，主要受decode和KV访问影响", "吞吐看单位时间输出token或请求数，和batching强相关"], ["为什么用户满意度不只看吞吐？", "RAG如何影响TTFT？"], ["用一个延迟指标解释全部体验"], "vllm", "基础"],
+        ["Beam vs sampling", "beam search 和 sampling 有什么不同？", ["beam search保留多个高概率候选，偏确定性和高似然", "sampling按概率随机采样，配合temperature/top-p控制多样性", "聊天和创作常用sampling，结构化任务可能用beam或约束解码"], ["beam search为什么可能生成无聊答案？", "self-consistency算哪类？"], ["认为beam一定更好"], "sampling", "基础"],
+        ["Top-k top-p", "top-k 和 top-p sampling 怎么解释？", ["top-k只保留概率最高的k个token", "top-p保留累计概率达到p的最小候选集合，能随分布动态变化", "它们和temperature一起控制质量、多样性和风险"], ["top-p为什么常比top-k灵活？", "p太小会怎样？"], ["忘记先softmax概率再截断重归一"], "sampling", "基础"],
+        ["Temperature", "temperature 对生成分布有什么影响？", ["temperature缩放logits，低温更确定，高温更随机", "它不改变模型参数，只改变采样分布", "面试里要联系创造性、稳定性、RL探索和评测一致性"], ["temperature为0是什么？", "高温会提高正确率吗？"], ["只说随机性，不说logits缩放"], "sampling", "基础"],
+        ["KV compression", "KV cache compression 有哪些思路？", ["可以做量化、token eviction、层间共享、稀疏attention或重要token保留", "目标是减少显存和带宽，同时尽量保持长上下文质量", "评估要看不同任务、长度和位置敏感性"], ["丢哪些token最危险？", "和GQA有什么互补关系？"], ["只看压缩率，不看质量"], "vllm", "进阶"],
+        ["Tensor parallel inference", "推理里的 tensor parallel 怎么理解？", ["把单层大矩阵按列或行切到多张GPU上并行算", "适合单卡放不下或单卡算力不足的大模型", "代价是GPU间通信，batch小或网络差时收益受限"], ["TP和PP区别？", "attention和MLP怎么切？"], ["以为多卡一定线性加速"], "zero", "基础"],
+        ["Pipeline inference", "pipeline parallel 推理适合什么场景？", ["把不同层放到不同GPU，解决模型太深或太大单卡放不下", "吞吐依赖micro-batch和流水线填充，单请求延迟可能增加", "常和tensor parallel结合使用"], ["bubble是什么？", "prefill和decode阶段PP表现一样吗？"], ["只考虑显存，不考虑流水线气泡"], "zero", "进阶"],
+        ["SGLang RadixAttention", "SGLang/RadixAttention 解决什么问题？", ["复杂LLM程序会有多次生成、分支和共享前缀", "RadixAttention通过前缀树复用KV cache，减少重复计算", "它适合Agent、RAG、多轮和结构化输出场景"], ["和vLLM PagedAttention有什么不同？", "structured output怎么加速？"], ["把SGLang只当另一个API server"], "sglang", "进阶"],
+        ["Streaming decode", "流式输出为什么能改善体验？", ["模型总生成时间不变，但用户更早看到首token和中间结果", "流式适合长答案和交互式应用，要处理取消、回压和错误", "不能用流式掩盖TTFT过高或内容质量问题"], ["流式对吞吐有什么影响？", "Agent工具调用能不能流式？"], ["把流式当成推理加速算法"], "web", "基础"]
+      ],
+      train: [
+        ["Memory estimate", "训练 8B 模型静态显存怎么估？", ["参数bf16约2字节，8B参数约16GB", "全参训练还要梯度和优化器状态，Adam通常远大于参数本身", "粗估可按参数、梯度、优化器、激活和碎片分别拆"], ["为什么有人说约参数显存6倍？", "LoRA会省哪部分？"], ["只算参数，不算优化器和激活"], "zero", "基础"],
+        ["Param grad optimizer", "参数、梯度、优化器状态分别占什么？", ["参数是模型权重，训练和推理都需要", "梯度只在训练反向传播需要", "Adam优化器有一阶二阶动量，通常是显存大头"], ["bf16训练中master weights是什么？", "ZeRO切哪部分？"], ["把优化器状态忘掉"], "zero", "基础"],
+        ["ZeRO stages", "ZeRO 三个 stage 怎么讲？", ["stage 1切分优化器状态，stage 2再切分梯度", "stage 3进一步切分参数，需要通信时再gather", "stage越高越省显存，但通信和实现复杂度更高"], ["ZeRO-3和FSDP像在哪里？", "什么时候不用最高stage？"], ["只说越高越好"], "zero", "基础"],
+        ["FSDP", "FSDP 和 ZeRO-3 的关系是什么？", ["FSDP也是参数分片训练思想，按module在forward/backward时gather和释放参数", "目标是减少每卡常驻参数、梯度和优化器状态", "区别更多在框架实现、wrap策略和通信调度"], ["wrap policy怎么选？", "FSDP和TP能混用吗？"], ["把FSDP当数据并行的同义词"], "zero", "进阶"],
+        ["Parallelism", "数据并行、张量并行、流水并行分别解决什么？", ["数据并行复制模型切数据，简单但每卡要放完整模型", "张量并行切单层矩阵，解决单层太大", "流水并行切层，解决模型太深或太大，代价是气泡和调度"], ["3D parallelism是什么？", "通信模式有什么区别？"], ["只按名字背，不讲切什么"], "zero", "基础"],
+        ["Activation checkpointing", "activation checkpointing 为什么省显存？", ["不保存全部中间激活，反向时重新计算一部分forward", "它用额外计算换显存，适合显存瓶颈训练", "要和序列长度、batch size和并行策略一起调"], ["它影响参数显存吗？", "重计算会增加多少时间？"], ["认为它免费省显存"], "zero", "基础"],
+        ["Mixed precision", "bf16/fp16/fp32 训练怎么取舍？", ["fp32稳定但显存和带宽高，fp16省但动态范围小", "bf16动态范围接近fp32，现代大模型训练更常用", "还要关注梯度缩放、算子支持和数值稳定"], ["为什么bf16常比fp16稳？", "哪些状态保留fp32？"], ["只说低精度更快，不谈稳定性"], "web", "基础"],
+        ["LoRA", "LoRA 为什么能省训练资源？", ["冻结原模型权重，只训练低秩矩阵A和B表示权重增量", "可训练参数和优化器状态大幅减少，推理时可合并权重", "适合垂域和轻量适配，但能力上限受rank和数据影响"], ["LoRA加在哪些层？", "rank怎么选？"], ["以为LoRA减少原模型推理参数"], "lora", "基础"],
+        ["QLoRA", "QLoRA 相比 LoRA 多了什么？", ["QLoRA把基座权重量化到4bit并冻结，梯度回传到LoRA参数", "NF4、double quantization和paged optimizer是关键节省点", "它让单卡微调更大模型成为可能，但训练和推理质量要评估"], ["QLoRA训练的是量化权重吗？", "量化误差怎么影响效果？"], ["把QLoRA说成直接训练4bit全参数"], "qlora", "基础"],
+        ["PEFT choice", "LoRA、全参、prefix tuning 怎么选？", ["全参能力上限高但成本和遗忘风险高", "LoRA成本低、部署灵活，适合多数垂域适配", "prefix/prompt类更轻但表达能力有限，选择看数据量、目标能力和部署约束"], ["多LoRA怎么服务？", "什么时候必须全参？"], ["只按显存选，不看任务目标"], "lora", "进阶"],
+        ["Data mixture", "继续预训练或SFT的数据配比怎么定？", ["先按目标能力和业务流量定义数据桶", "小规模实验看能力增益和通用能力回归，再调比例", "避免某类高质量但窄分布数据把模型拉偏"], ["垂域数据越多越好吗？", "如何处理中英比例？"], ["拍脑袋配比，不做消融"], "report", "高频追问"],
+        ["Data cleaning", "大模型训练数据清洗关注什么？", ["去重、去低质、去污染、去隐私和安全风险", "保留高质量推理、代码和领域知识数据", "清洗策略要用质量模型、规则和抽检一起验证"], ["数据去重为什么重要？", "网页数据怎么过滤？"], ["只追求数据量"], "web", "基础"],
+        ["Dedup", "数据去重对训练有什么影响？", ["重复数据会浪费算力并导致模型记忆和评测污染", "near-duplicate更难，需要simhash、MinHash或embedding方法", "去重要在文档、段落和样本级别分别考虑"], ["去重会不会误删模板数据？", "代码数据如何去重？"], ["只做完全字符串去重"], "web", "基础"],
+        ["Benchmark contamination", "benchmark 污染怎么发现和避免？", ["训练数据可能包含测试题或近似题，导致分数虚高", "要做n-gram、语义相似、时间切分和人工抽检", "评估时加入私有集、变体题和在线新题更可靠"], ["LiveCodeBench为什么强调时间切分？", "污染一定能完全避免吗？"], ["只相信公开榜单"], "web", "基础"],
+        ["Synthetic data training", "合成数据用于训练时如何验收？", ["先定义生成目标和过滤标准", "用验证器、评审模型和人工抽检筛选，再做小规模训练验证增益", "要监控多样性、错误模式和与评测集重合"], ["合成数据怎么做难度分层？", "如何避免风格坍缩？"], ["生成越多越好"], "rlhf", "基础"],
+        ["Curriculum", "课程学习在大模型训练中怎么用？", ["按难度、长度或能力逐步引入数据，帮助稳定训练", "推理RL可从易验证任务到难任务", "但过强curriculum可能导致模型不适应真实混合分布"], ["难度怎么估计？", "curriculum和dynamic sampling区别？"], ["只按题目长度排序"], "dapo", "进阶"],
+        ["CPT", "continued pretraining 和 SFT 的区别是什么？", ["CPT仍是语言建模目标，主要注入领域知识和语料分布", "SFT是指令输入到目标输出的监督训练，改变交互行为", "CPT后通常还要SFT/对齐，避免只会续写不会听指令"], ["领域大模型为什么先CPT？", "CPT会遗忘吗？"], ["把CPT等同于SFT"], "web", "基础"],
+        ["Domain adaptation", "垂域大模型训练怎么避免通用能力掉太多？", ["控制领域数据比例并混入高质量通用数据", "使用回归评测集监控通用能力、安全和语言质量", "必要时用LoRA、adapter或小步继续训练降低破坏"], ["垂域知识注入有哪些路线？", "RAG和微调怎么组合？"], ["只看垂域测试集"], "report", "基础"],
+        ["Loss spike", "大模型训练 loss spike 怎么处理？", ["先区分数据异常、学习率过高、数值溢出、通信或硬件问题", "处理包括降低LR、梯度裁剪、跳过坏batch、检查数据和混合精度", "要记录spike前后的数据、梯度norm和checkpoint"], ["loss spike一定要回滚吗？", "MoE为什么可能更容易不稳？"], ["看到spike就盲目调小batch"], "web", "进阶"],
+        ["LR warmup", "学习率 warmup 为什么重要？", ["训练初期参数和优化器状态还不稳定，直接大LR容易发散", "warmup逐步增加LR，之后按计划衰减", "大模型训练要结合batch size、优化器和loss曲线调"], ["cosine decay和constant LR怎么选？", "warmup过长有什么问题？"], ["只背warmup，不看曲线"], "transformer", "基础"],
+        ["MoE load balancing", "MoE 训练为什么需要 load balancing？", ["路由器可能把token集中到少数专家，导致专家过载和能力不均", "load balance loss或路由约束鼓励专家利用更均匀", "还要关注通信、expert parallel和容量因子"], ["shared expert有什么作用？", "MoE推理为什么省激活参数？"], ["只说参数多但计算少"], "deepseek", "进阶"],
+        ["FP8 training", "FP8 训练的收益和风险是什么？", ["FP8降低显存和带宽，提高训练吞吐", "风险是数值范围和精度不足，需要缩放、校准和关键算子保精度", "适合大规模训练系统优化，但必须有稳定性监控"], ["FP8和bf16怎么混用？", "哪些张量不适合FP8？"], ["把FP8当无损压缩"], "deepseek", "进阶"],
+        ["Ray verl", "verl/Ray 在 LLM RL 里起什么作用？", ["Ray负责分布式资源和actor调度，verl组织policy、rollout、reward和trainer", "它让vLLM rollout、训练GPU和reward服务协同", "面试要说清数据流和资源瓶颈"], ["TRL和verl有什么区别？", "rollout worker如何扩展？"], ["只说框架名，不讲底层资源调度"], "ray", "高频追问"],
+        ["vLLM rollout", "为什么 RL 训练里常用 vLLM 加速 rollout？", ["rollout是生成大量候选或轨迹，推理吞吐直接决定训练速度", "vLLM用PagedAttention和continuous batching提高并发", "还要处理logprob回传、采样参数一致和模型权重同步"], ["权重更新后rollout服务怎么同步？", "vLLM和训练进程共享GPU吗？"], ["只把vLLM当部署工具"], "vllm", "高频追问"],
+        ["Logging ablation", "训练实验日志和消融怎么设计？", ["关键记录loss、reward、KL、长度、pass rate、吞吐和显存", "消融要围绕核心假设，控制数据、模型、步数和随机性", "面试里要能用曲线解释为什么方法有效或无效"], ["Ablation没提升怎么讲？", "如何定位是数据还是算法带来的收益？"], ["只报最终分数"], "report", "基础"]
+      ],
+      vlm: [
+        ["LLaVA", "LLaVA 架构怎么口述？", ["通常由vision encoder、投影层和LLM组成", "先做图文对齐，再做视觉指令微调", "关键是视觉token如何接入LLM以及多模态指令数据质量"], ["为什么要两阶段训练？", "投影层作用是什么？"], ["只说CLIP加LLM，不讲对齐训练"], "llava", "基础"],
+        ["Vision tower", "vision tower 选择会影响什么？", ["影响视觉特征质量、分辨率、OCR和细粒度理解", "冻结或微调会影响成本和适配能力", "还要考虑token数量和LLM上下文成本"], ["CLIP和ViT怎么联系？", "高分辨率图片怎么处理？"], ["只看视觉encoder榜单，不看下游任务"], "clip", "基础"],
+        ["Projection alignment", "多模态投影层为什么重要？", ["它把视觉特征映射到LLM可理解的embedding空间", "训练初期主要做跨模态对齐，避免直接扰动LLM", "投影太弱表达不足，太复杂可能过拟合"], ["MLP projector和linear projector区别？", "为什么先冻结LLM？"], ["忽视视觉token和文本token尺度差异"], "llava", "基础"],
+        ["VQ-VAE", "VQ-VAE 的 codebook 为什么不能直接反传，怎么训练？", ["量化选择离散code会阻断普通梯度", "通常用straight-through estimator和commitment loss训练", "优点是把连续输入压成离散token，便于生成和压缩"], ["codebook collapse怎么办？", "为什么离散token有用？"], ["只说编码器解码器，不讲量化"], "vqvae", "进阶"],
+        ["Audio text fusion", "音频和文本模态怎么融合？", ["先用音频编码器提取帧级或token级表示", "再通过投影、cross-attention或拼接方式接入LLM", "评估要看时序对齐、语义保真和生成质量"], ["音频token太长怎么办？", "多模态同步怎么做？"], ["把所有模态简单concat不谈对齐"], "report", "基础"],
+        ["Video understanding", "视频理解大模型难点是什么？", ["视频有长时序、大量帧和动作关系，token成本高", "需要采样、时序建模、事件记忆和多粒度表示", "评估要覆盖动作、因果、时序定位和多视角融合"], ["长视频OOM怎么办？", "帧采样会丢什么？"], ["把视频当多张图片平均"], "report", "进阶"],
+        ["Image resolution", "图像token分辨率如何影响VLM？", ["高分辨率提升细节、OCR和小物体识别，但token成本上升", "低分辨率成本低但容易丢细节", "常用动态分辨率、切图或多尺度策略平衡"], ["OCR为什么需要高分辨率？", "切图如何保全局关系？"], ["只追求高分辨率不看成本"], "llava", "基础"],
+        ["Multimodal RL", "多模态后训练或RL有什么特殊难点？", ["reward要评价图文一致、视觉事实、推理和安全", "VLM容易出现看图幻觉，需要细粒度grounding评测", "训练成本还受视觉token和数据标注影响"], ["图片理解RL会影响视频吗？", "如何设计VLM偏好数据？"], ["沿用纯文本reward不改"], "report", "高频追问"],
+        ["VLM hallucination", "VLM 幻觉怎么缓解？", ["数据上增加负样本、拒答和细粒度标注", "模型上做grounding、OCR/检测辅助和偏好优化", "评估上看存在性、属性、位置和关系错误"], ["POPE类评测看什么？", "为什么VLM更容易编造细节？"], ["只靠prompt说不要幻觉"], "llava", "基础"],
+        ["VLM metrics", "多模态生成项目有哪些评价指标？", ["按任务分自动指标、人工偏好和下游成功率", "生成任务看质量、多样性、时序一致和语义对齐", "自设计指标要说明计算逻辑和和业务目标的关系"], ["动作生成如何评价？", "指标和人感不一致怎么办？"], ["只报一个FID或BLEU"], "report", "基础"],
+        ["OCR grounding", "VLM 做 OCR/图表理解为什么难？", ["需要高分辨率、布局结构和文字识别能力", "普通视觉encoder可能压缩掉小字和表格关系", "可以用专门OCR模块、切图、多尺度和结构化解析增强"], ["图表问答怎么评估？", "表格结构怎么输入LLM？"], ["只把图片缩小后喂模型"], "clip", "进阶"],
+        ["MoT", "Mixture of Transformer 或多模态分别过 FFN 再 self-attention 怎么理解？", ["不同模态可有专门FFN或专家处理模态特征", "concat后self-attention实现跨模态交互", "核心仍要讲清token形状、mask和attention计算"], ["为什么图片和文本分开FFN？", "concat后位置编码怎么处理？"], ["被新名词吓住，忘记回到MHA"], "transformer", "高频追问"],
+        ["Diffusion basics", "diffusion 模型基本原理怎么口述？", ["正向过程逐步加噪，反向模型学习去噪生成", "训练通常预测噪声、x0或velocity", "优势是生成质量高，代价是采样步数和控制复杂"], ["DDPM和DDIM区别？", "扩散如何接文本条件？"], ["只说从噪声生成图片，不讲训练目标"], "diffusion", "基础"],
+        ["VLM data curation", "VLM 数据构造要注意什么？", ["图文对齐质量、任务多样性、视觉细节和负样本很关键", "合成指令要过滤幻觉和不可回答问题", "还要控制版权、安全和敏感内容"], ["如何构造视觉推理数据？", "caption数据和instruction数据区别？"], ["只堆图文对数量"], "llava", "基础"],
+        ["Visual prompt", "视觉prompt和文本prompt结合有什么技巧？", ["先明确图像中需要关注的区域、任务和输出格式", "复杂图像可分步观察、局部放大或用工具辅助", "不能让文本prompt诱导模型编造看不到的内容"], ["区域提示怎么实现？", "多图输入怎么比较？"], ["用文字暗示替代视觉证据"], "web", "基础"]
+      ],
+      project: [
+        ["Self introduction", "大模型岗自我介绍怎么组织？", ["先用一句话定位自己：后训练、Agentic RL、RAG/工具调用", "再讲一条主线项目，突出问题、方法、结果和可迁移能力", "最后对齐岗位，说明能做训练、评测和工程闭环"], ["自我介绍多久合适？", "论文多怎么取舍？"], ["按时间流水账讲经历"], "report", "基础"],
+        ["Motivation", "介绍论文时如何讲清 motivation？", ["先说真实痛点和已有方法不足", "再说你的关键假设为什么合理", "最后说明这个问题为什么值得在业务或研究上解决"], ["面试官否定场景怎么办？", "如何证明问题不是伪需求？"], ["只讲方法，不讲为什么"], "report", "基础"],
+        ["Cost", "被问 cost 不一定更好时怎么回答？", ["先承认cost是核心约束，不能只看指标", "拆训练成本、推理成本、数据成本和工程复杂度", "再说明在哪些场景收益超过成本，哪些场景不适用"], ["如何量化成本收益？", "你的方法能否降级？"], ["硬辩一定更好"], "report", "高频追问"],
+        ["Ablation", "ablation 怎么设计才能有说服力？", ["围绕核心贡献逐项移除或替换", "保持数据、模型、训练步数和评测一致", "分析不仅报分数，还解释为什么某模块有效"], ["消融没显著提升怎么办？", "交互项怎么测？"], ["做一堆无关消融"], "report", "基础"],
+        ["Failure case", "项目失败案例怎么讲？", ["选一个真实、有技术含量且能体现复盘能力的失败", "说明原因定位、尝试过的修复和最终取舍", "最后说从失败中沉淀了什么评测或工程经验"], ["失败会不会减分？", "如何避免听起来像找借口？"], ["说没有失败案例"], "report", "高频追问"],
+        ["Metric", "如何解释你项目里的评价指标？", ["说明指标计算方式、衡量的能力和业务意义", "承认指标盲区，并配合人工评测或其他指标", "如果自设计指标，要解释为什么比现有指标更贴合目标"], ["指标和主观体验冲突怎么办？", "统计显著性怎么做？"], ["只报数值，不解释含义"], "report", "基础"],
+        ["Dataset", "面试官深挖数据集时怎么答？", ["讲来源、规模、清洗、标注、划分和质量控制", "说明训练集和测试集是否泄漏或分布偏移", "补充数据选择对模型能力的影响"], ["为什么这样配比？", "数据噪声怎么处理？"], ["不知道数据怎么来的"], "report", "基础"],
+        ["Baseline", "为什么选择这些 baseline？", ["baseline要覆盖强模型、经典方法和最接近工作", "还要保证公平设置和可复现", "如果没有某个baseline，要说明资源、接口或适配限制"], ["如何避免不公平比较？", "比SOTA差怎么办？"], ["只选弱baseline"], "report", "基础"],
+        ["Contribution", "如何用三句话讲项目贡献？", ["第一句话讲问题和目标", "第二句话讲核心方法或洞察", "第三句话讲结果、影响和限制"], ["贡献和工程实现怎么区分？", "共同作者很多怎么办？"], ["把所有细节都塞进贡献"], "report", "基础"],
+        ["Limitation", "论文或项目 limitation 怎么讲不减分？", ["主动承认边界条件，比如数据、成本、泛化或评测限制", "说明这些限制为什么存在，以及你做过哪些验证", "给出下一步可执行改进"], ["局限会不会影响录用？", "如何从局限引到未来工作？"], ["把局限说成不重要"], "report", "基础"],
+        ["Business landing", "科研项目如何和腾讯/字节业务结合？", ["先抽象项目解决的能力，比如工具调用、评测、后训练稳定性", "再映射到业务场景，如搜索Agent、办公助手、代码助手或内容理解", "最后说清成本、风险和验收指标"], ["业务满意度不升怎么办？", "如何做AB实验？"], ["强行贴业务名词"], "report", "高频追问"],
+        ["Roadmap", "如果继续做这个方向，下一步是什么？", ["下一步应围绕最主要瓶颈，而不是随便加模块", "可以从数据、算法、系统和评测四个方向选最关键一项", "要说出可验证里程碑"], ["三个月内能做什么？", "资源翻倍你会怎么做？"], ["给空泛愿景没有实验计划"], "report", "基础"],
+        ["Change direction", "为什么从原方向转到大模型后训练/Agent？", ["先承认原方向积累的能力，比如建模、实验和系统思维", "再说明大模型后训练/Agent是更高杠杆的应用场景", "最后讲你已经做了哪些项目或学习来完成转向"], ["转向多久了？", "基础不够怎么办？"], ["只说行业热"], "report", "高频追问"],
+        ["Learning frontier", "怎么学习前沿技术？", ["跟论文、开源代码、技术报告和真实复现实验", "用问题驱动学习，比如GRPO、verl、vLLM或Agent harness", "定期把学习沉淀成实验、笔记和面试可讲项目"], ["如何判断论文价值？", "怎么避免只看不做？"], ["只说看arXiv和公众号"], "report", "基础"],
+        ["Teamwork", "项目中你具体负责什么？", ["明确自己负责的数据、模型、训练、评测或系统模块", "用具体产出证明贡献，比如代码、实验、指标或论文部分", "也要说明和队友接口怎么协作"], ["如果贡献重叠怎么讲？", "导师或实习mentor作用是什么？"], ["说整个项目都是我做的但细节答不上"], "report", "基础"],
+        ["Technical depth", "面试官追问细节时怎么保持节奏？", ["先回答结论，再展开关键机制，最后补实验或代码细节", "不会的地方承认边界，并给出合理排查思路", "不要被一个问题带跑整个叙事"], ["被压力面否定怎么办？", "如何争取解释空间？"], ["急着防御，忘记结构化回答"], "report", "高频追问"],
+        ["Negative results", "实验负结果怎么讲？", ["负结果可以体现你理解问题边界", "讲清假设、实验设置、失败原因和后续调整", "如果负结果推翻原假设，要说明因此学到了什么"], ["负结果要放论文吗？", "面试里讲会不会显弱？"], ["隐藏负结果导致被追问穿帮"], "report", "进阶"],
+        ["Reproducibility", "如何证明你的实验可复现？", ["固定数据版本、代码commit、随机种子和训练配置", "记录环境、日志、checkpoint和评测脚本", "关键结果做多次运行或置信区间"], ["大模型训练很贵怎么复现？", "开源代码不完整怎么办？"], ["只说我本地跑过"], "report", "基础"],
+        ["Presentation", "GM/答辩 PPT 怎么准备？", ["开头用一页讲清研究主线和岗位匹配", "技术部分聚焦两三个亮点，不堆所有论文", "每页准备业务价值、成本、风险和追问答案"], ["30分钟PPT怎么分配？", "多位面试官轮流问怎么办？"], ["自我介绍太偏技术导致被打断"], "report", "高频追问"],
+        ["Reverse questions", "反问环节问什么更有效？", ["问团队当前最难的技术问题和实习生能参与的模块", "问评估标准、转正机制和导师协作方式", "避免只问薪资和作息，除非HR阶段"], ["如何判断组是否适合自己？", "可以问技术栈吗？"], ["没有反问或只问泛泛问题"], "report", "基础"]
+      ],
+      company: [
+        ["Tencent Qingyun", "腾讯青云大模型方向最该准备什么？", ["准备论文和项目深挖，尤其是为什么、cost、ablation和业务结合", "技术上高频是GRPO/DAPO、RAG、Agent、KV cache和vLLM", "还要准备GM答辩和PPT，讲清成长性和转正匹配"], ["青云为什么看重research talk？", "项目被否定怎么应对？"], ["只背八股，不练项目呈现"], "report", "高频追问", "腾讯青云"],
+        ["Tencent Hunyuan", "混元/基座组面试怎么对齐？", ["混元更可能问推理框架、算子、训练和基座模型细节", "要准备MHA/KV cache、显存、并行和post-training系统", "回答要体现能进真实研发闭环"], ["CUDA不会怎么办？", "推理算法怎么讲？"], ["只讲应用层Agent"], "report", "进阶", "腾讯混元"],
+        ["Byte Seed", "字节 Seed/TopSeed 怎么准备？", ["强调研究潜力和训练方案，能讲SFT/RL/CPT/RAG如何提升豆包能力", "项目要有清晰指标、数据和工程落地", "准备开放题，比如如何训练专业输出能力"], ["Seed和普通实习有什么区别？", "博士项目怎么转业务？"], ["只讲论文不讲训练方案"], "report", "高频追问", "字节 Seed"],
+        ["Kimi", "Kimi/月之暗面适合准备哪些问题？", ["长上下文、Agent、工具调用和coding能力是主线", "Kimi K2要准备MoE、MuonClip、多阶段后训练和agentic data synthesis", "面试叙事要强调复杂任务和长上下文可靠性"], ["Kimi K2为什么强调Agentic Intelligence？", "长上下文和RAG怎么取舍？"], ["只说Kimi长文本，不讲技术路线"], "kimi", "进阶", "Kimi"],
+        ["DeepSeek", "DeepSeek 面试最该准备什么？", ["R1/RLVR/GRPO是后训练核心，V3/MLA/MoE/MTP是模型系统核心", "回答要强调低成本训练、可验证reward和数学代码推理", "项目要经得起细节拷打和研究假设挑战"], ["DeepSeek为什么能低成本？", "R1-Zero说明了什么？"], ["只会聊新闻，不懂GRPO和MLA"], "deepseek", "高频追问", "DeepSeek"],
+        ["Zhipu GLM", "智谱 GLM/GUI Agent 怎么准备？", ["准备GLM模型路线、Agentic coding、GUI Agent和多模态GLM-V", "应用岗要讲RAG、工具调用、评测和业务场景", "GUI Agent重点是状态表示、操作轨迹和安全"], ["GUI Agent和普通Agent区别？", "智谱面经为什么常问细节？"], ["忽视Agent工程实践"], "zhipu", "进阶", "智谱"],
+        ["Xiaomi MiMo", "小米 MiMo 大模型方向怎么准备？", ["MiMo主线是reasoning-first、数学代码推理、Agent和人车家生态", "技术上准备MTP、可验证RL、数据重采样和多模态", "场景上要能讲端侧、车端和IoT约束"], ["MiMo和DeepSeek路线有什么关系？", "skills上下文怎么不爆？"], ["只把小米当手机业务"], "mimo", "进阶", "小米 MiMo"],
+        ["Meituan LongCat", "美团 LongCat/北斗大模型怎么准备？", ["应用侧重点是RAG、memory、MCP、function calling和tool router", "基座侧会问VLM、生成理解统一和Code Agent", "回答要把业务任务成功率和成本讲清"], ["美团为什么关心Agent应用？", "MCP如何落地？"], ["只准备推荐算法，不准备Agent"], "report", "高频追问", "美团 LongCat"],
+        ["Kuaishou", "快手快Star-X 大模型方向怎么准备？", ["快手会把大模型和搜索推荐、长用户序列、内容理解结合", "后训练问题高频是DPO/RL、reward hacking和RAG召回噪声", "要能讲AUC/UAUC与生成式指标的差异"], ["RAG召回错文档怎么办？", "大模型怎么处理用户序列？"], ["只讲LLM，不懂推荐搜索指标"], "report", "进阶", "快手"],
+        ["MiniMax", "MiniMax TopTalent 怎么准备？", ["MiniMax偏多模态和真实模型研发，可能问VLM后训练、benchmark和项目价值", "要准备图像理解RL、视频影响和手写基础算子", "回答要强调实验设计和质量评估"], ["图片理解RL会迁移到视频吗？", "benchmark为什么重要？"], ["只讲文本后训练"], "report", "进阶", "MiniMax"],
+        ["StepFun", "阶跃星辰后训练面试怎么准备？", ["准备混合加训、continued SFT、RLVR、benchmark驱动优化和GRPO/top-p", "它更像纯后训练研发面，要讲指标曲线和收敛判断", "需要能把训练失败和下一步调参说清"], ["1T模型训练难点？", "SFT loss起点说明什么？"], ["只背算法名，不懂训练曲线"], "report", "高频追问", "阶跃星辰"],
+        ["Alibaba Qwen", "阿里系 Qwen/T-Star 怎么准备？", ["T-Star可能更考试化，覆盖机器学习基础、概率、MHA、DP和图论", "Qwen基模/Agent方向要准备预训练、后训练、工具调用和应用落地", "要兼顾八股和coding稳定性"], ["通义实验室实习看什么？", "机试怎么准备？"], ["只准备LLM，不补传统ML和代码"], "qwen", "基础", "阿里系"],
+        ["Xiaohongshu REDstar", "小红书 REDstar 怎么准备？", ["大模型题和算法基础混合，长上下文、Agent、归一化和coding都可能出现", "排序推荐背景对小红书仍重要", "回答要能连接内容社区、搜索推荐和Agent场景"], ["REDstar和普通实习差异？", "长上下文怎么服务社区内容？"], ["只准备大模型论文，不练基础题"], "report", "基础", "小红书"],
+        ["Baidu Wenxin", "百度文心/AIDU 大模型应该补哪些准备？", ["公开面经不足时按文心、搜索、知识增强和Agent应用准备", "技术主线是RAG、知识增强、推理和工程服务", "同时补传统NLP、搜索和推荐基础"], ["AIDU人才计划可能看什么？", "搜索公司为什么重视RAG？"], ["因为样本少就不准备"], "report", "基础", "百度"],
+        ["Huawei Pangu", "华为盘古/2012 Lab 怎么准备？", ["准备国产算力、分布式训练、模型压缩、行业大模型和工程可靠性", "华为常按实验室和部门分散，要看具体JD", "回答要强调系统能力、稳定性和长期工程投入"], ["昇腾适配会问什么？", "行业大模型和通用大模型区别？"], ["只按互联网面经准备"], "report", "进阶", "华为"]
+      ],
+      coding: [
+        ["MHA numpy", "如何用 numpy 手写 multi-head self-attention？", ["先线性投影QKV并reshape成batch、heads、seq、dim", "计算scaled dot-product attention，加causal mask后softmax", "再乘V、合并heads并输出，复杂度说明O(n^2d)"], ["如何加入KV cache？", "mask维度怎么广播？"], ["softmax维度写错"], "transformer", "高频追问"],
+        ["Top-p sampling", "手写 top-p sampling 的步骤是什么？", ["对logits做temperature缩放和softmax", "按概率降序排序，取累计概率达到p的最小集合", "对候选概率重归一后采样，并映射回原token id"], ["top-k和top-p怎么同时用？", "p很小时有什么风险？"], ["忘记重归一或索引映射"], "sampling", "基础"],
+        ["GRPO trainer skeleton", "手写一个最小 GRPO trainer 伪代码怎么组织？", ["对每个prompt采样G个response并计算old logprob", "reward后做组内均值方差归一得到advantage", "用ratio、clip、KL和mask计算loss并反向更新"], ["padding位置怎么mask？", "reward全一样怎么办？"], ["只写loss公式，不写数据流"], "grpo", "高频追问"],
+        ["Sampler", "实现一个可复现采样器要注意什么？", ["输入logits、temperature、top-k/top-p和随机种子", "处理非法token、mask、概率归一和数值稳定", "输出token和必要的logprob，便于RL训练"], ["如何返回logprob？", "如何批量采样？"], ["只返回token，不保留训练需要的信息"], "sampling", "基础"],
+        ["DP grid", "面试里遇到网格路径或股票DP怎么稳住？", ["先定义状态和转移，再讲边界条件", "说明时间空间复杂度，并给滚动数组优化", "最后回到大模型岗位：coding题考查的是基本工程可靠性"], ["路径有障碍怎么办？", "股票可多次交易怎么改？"], ["急着写代码不定义状态"], "report", "基础"]
+      ]
+    };
+
+    function sourceFor(key) {
+      return SOURCE_LIBRARY[key] || SOURCE_LIBRARY.web;
+    }
+
+    function categoryLabel(id) {
+      return CATEGORIES.find(c => c.id === id)?.label || id;
+    }
+
+    const TOPIC_CHECK_RULES = [
+      {
+        re: /SFT|RLHF|PPO|DPO|GRPO|DAPO|RLVR|reward|KL|entropy|熵|Verifier|verifier|后训练|偏好|采样 temperature/i,
+        checks: [
+          "后训练题必须说明训练信号来源：偏好、可验证奖励、规则奖励、模型奖励或人工反馈。",
+          "RL 类答案要同时讲 rollout、logprob、advantage、KL/reference、clip 和评测回归。",
+          "可验证任务的优势是 reward 可自动扩展，风险是验证器覆盖不足和 reward hacking。"
+        ]
+      },
+      {
+        re: /RAG|retrieval|embedding|reranker|BM25|citation|faithfulness|知识库|召回|引用/i,
+        checks: [
+          "RAG 要拆成 query 改写、召回、重排、上下文组装、生成和引用校验。",
+          "RAG 评测至少区分检索相关性、证据覆盖率、生成忠实度和最终答案正确率。",
+          "不能把检索文档当最高优先级指令执行，prompt injection 和知识库投毒必须单独防护。"
+        ]
+      },
+      {
+        re: /Agent|MCP|function calling|tool|harness|GUI|Browser|SWE|multi-agent|自进化|轨迹|沙箱|memory/i,
+        checks: [
+          "Agent 题要把一次任务看成 trajectory，而不是单轮问答。",
+          "harness 必须能定义任务、执行工具、记录轨迹、重放失败、判分和统计成本。",
+          "工具调用要覆盖 schema、权限、沙箱、错误恢复和用户确认机制。"
+        ]
+      },
+      {
+        re: /MHA|attention|KV cache|GQA|MQA|PagedAttention|vLLM|FlashAttention|speculative|prefill|decode|RoPE|ALiBi|long context|TTFT|TPOT/i,
+        checks: [
+          "推理系统题要先区分 prefill 和 decode：前者更计算密集，后者更受 KV cache 读写和调度影响。",
+          "KV cache 优化主要影响显存占用和 decode 带宽，不会让 Q 投影、FFN 等所有计算同步减半。",
+          "FlashAttention 是 IO-aware exact attention，PagedAttention 是 KV cache 内存管理，两者解决的问题不同。"
+        ]
+      },
+      {
+        re: /LoRA|QLoRA|ZeRO|FSDP|DeepSpeed|显存|parallel|checkpoint|bf16|fp16|数据|去重|污染|synthetic|benchmark|CPT/i,
+        checks: [
+          "训练系统题要拆参数、梯度、优化器状态、激活、临时 buffer、通信 bucket 和数据管线。",
+          "ZeRO/FSDP 的节省来自分片状态，代价是通信、all-gather、reduce-scatter 和 checkpoint 复杂度。",
+          "数据题要同时讲质量、去重、污染、配比、难度分层和回归评测。"
+        ]
+      },
+      {
+        re: /LLaVA|CLIP|VQ-VAE|diffusion|VLM|vision|video|OCR|multimodal|多模态|图像|视频|音频/i,
+        checks: [
+          "多模态题要明确视觉/音频 encoder、投影或 cross-attention、token 预算和跨模态对齐。",
+          "VLM 幻觉不能只靠 prompt 缓解，需要数据负样本、grounding、OCR/检测辅助和评测闭环。",
+          "视频和音频题额外关注时序对齐、采样策略、长上下文成本和指标与人感的一致性。"
+        ]
+      },
+      {
+        re: /Kimi|DeepSeek|MiMo|GLM|Qwen|LongCat|Seed|腾讯|字节|阿里|百度|华为|小米|智谱|美团|MiniMax|阶跃/i,
+        checks: [
+          "公司专项回答要把公司模型路线和目标岗位连接起来，而不是只复述公司新闻。",
+          "人才计划面试通常同时看研究深度、工程闭环、业务落地和可转正产出。",
+          "公司题的结尾应落到三个月能交付的训练、评测、Agent harness、RAG 或推理优化任务。"
+        ]
+      }
+    ];
+
+    function compactChecks(checks, limit = 7) {
+      const seen = new Set();
+      return checks.filter(Boolean).filter(item => {
+        const key = item.replace(/\s+/g, "");
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      }).slice(0, limit);
+    }
+
+    function topicChecks(topic, question, category) {
+      const text = `${category} ${topic} ${question}`;
+      return TOPIC_CHECK_RULES.flatMap(rule => rule.re.test(text) ? rule.checks : []);
+    }
+
+    function verifiedChecks({ category, topic, question, source }) {
+      return compactChecks([...(source.checks || []), ...topicChecks(topic, question, category)]);
+    }
+
+    function formatCheckLines(checks) {
+      return checks.map((x, i) => `${i + 1}. ${x}`).join("\n");
+    }
+
+    const DEEP_DIVE_FRAMES = {
+      post: {
+        core: "这类题的本质是把模型后训练拆成数据、奖励、采样、优化和评测闭环。面试官通常不是只想听算法名，而是要判断候选人是否理解一个方法为什么能提供训练信号，以及它在真实大模型训练里会在哪些地方失效。",
+        mechanics: "回答时先明确训练对象是policy、reference model、reward model还是verifier，再说明样本从哪里来、logprob和reward在哪里计算、梯度通过哪一个目标函数更新。后训练里的关键不是某个loss孤立成立，而是reward尺度、KL约束、采样温度、group质量、长度分布和任务难度共同决定训练稳定性。",
+        engineering: "工程落地要补rollout吞吐、显存、异步调度、日志指标和回归评测。可以主动提verl、vLLM、Ray、SGLang这类系统组件如何支撑采样和训练解耦，也要说明为什么RL比SFT贵，贵在多轮采样、reward计算、logprob回放和反向更新。",
+        evaluation: "评测不能只看一个榜单分数。推理看pass@k、准确率和长度分布，Agent看任务成功率和轨迹质量，通用能力看回归集，安全看拒答率和越界率。常见风险包括reward hacking、entropy collapse、长度偏置、全0全1 group、benchmark污染和灾难性遗忘。"
+      },
+      agent: {
+        core: "这类题的本质是把LLM从一次性生成器变成能观察环境、选择动作、调用工具并根据反馈修正的策略。面试官会看回答是否能从prompt技巧上升到trajectory、harness、state/action/observation和任务成功率。",
+        mechanics: "回答时先定义状态、动作、观察和终止条件。RAG题要讲离线索引和在线检索生成链路，Agent题要讲规划、工具路由、执行反馈、记忆和错误恢复。Agentic RL题还要讲长horizon信用分配，因为最终成功或失败往往由多步工具调用共同造成。",
+        engineering: "工程实现要强调harness。一个可用系统至少需要任务集、工具schema、沙箱、日志、可重放轨迹、判分器、成本统计和安全策略。没有稳定harness，RL或自进化得到的轨迹很难复现，失败也无法归因。",
+        evaluation: "评测要从最终答案扩展到轨迹级指标：成功率、步数、无效调用率、重试率、工具参数错误率、证据引用、成本和延迟。风险包括RAG投毒、prompt injection、错误记忆、工具权限过大、循环调用和模型把外部网页内容当成高优先级指令。"
+      },
+      infer: {
+        core: "这类题的本质是理解Transformer推理时token如何流过注意力、KV cache和batching系统。面试官通常会从MHA手撕延伸到GQA、vLLM、FlashAttention、speculative decoding和长上下文成本。",
+        mechanics: "回答时先讲张量形状：batch、seq、hidden、head和head_dim。prefill阶段一次处理prompt，decode阶段每步只生成一个新token但要读历史KV。优化的核心是减少显存读写、提升batch利用率、压缩KV cache或减少实际调用大模型的步数。",
+        engineering: "工程落地要区分吞吐和延迟。vLLM/PagedAttention解决KV cache碎片和动态batch问题，FlashAttention减少attention中间矩阵的HBM读写，GQA/MQA减少KV heads从而降低cache体积，speculative decoding用小模型草稿换取大模型并行验证。",
+        evaluation: "评测要看tokens/s、首token延迟、decode延迟、显存峰值、batch size、上下文长度和服务稳定性。常见坑是只讲理论FLOPs，不讲内存带宽和KV cache占用，或者把prefill优化和decode优化混在一起。"
+      },
+      train: {
+        core: "这类题的本质是大模型训练资源账本。面试官希望你能把参数、梯度、优化器状态、激活、通信和数据吞吐拆开，而不是笼统说显存不够就上并行。",
+        mechanics: "回答时先估算显存组成，再对应到解决手段。ZeRO和FSDP分片参数、梯度和优化器状态，tensor parallel切矩阵计算，pipeline parallel切层，activation checkpoint用计算换显存，LoRA/QLoRA减少可训练参数和优化器状态。",
+        engineering: "工程落地要关注数据管线、checkpoint、混合精度、通信拓扑和容错。训练系统不是只把模型跑起来，还要能监控loss、梯度范数、吞吐、OOM、数据重复、样本污染和节点失败。",
+        evaluation: "评测要同时看训练稳定性和能力收益。数据配比要通过ablation和回归集验证，合成数据要做过滤、去重和难度分层，benchmark要防污染。常见坑是只追求更大batch或更多数据，不看有效token质量和目标能力。"
+      },
+      vlm: {
+        core: "这类题的本质是视觉、文本和动作等模态如何对齐到统一的语言模型推理空间。面试官会看回答是否只背LLaVA结构，还是能讲清vision tower、projector、token预算、跨模态对齐和幻觉控制。",
+        mechanics: "回答时先讲视觉编码器如何把图片或视频变成token，再讲投影层或cross-attention如何接入LLM。多模态任务的关键是保留足够细节，同时控制视觉token成本。视频、音频和动作生成还需要时序建模和模态同步。",
+        engineering: "工程落地要关注分辨率、切图、多尺度、OCR、数据清洗和评测集。VLM后训练还要构造图文偏好数据、负样本和不可回答样本，避免模型把语言先验当视觉证据。",
+        evaluation: "评测要覆盖存在性、属性、位置、关系、OCR、图表、时序和用户任务成功率。风险包括看图幻觉、图文不对齐、视频帧采样丢信息、指标和人感不一致，以及视觉token导致的推理成本膨胀。"
+      },
+      project: {
+        core: "这类题的本质是科研叙事和工程判断。人才计划面试常常围绕论文和项目追问，重点不是背八股，而是看回答能否清楚解释问题为什么重要、方法为什么成立、成本是否值得，以及失败时怎么复盘。",
+        mechanics: "回答时用固定结构：问题定义、已有方法不足、核心假设、方法设计、实验验证、失败案例和下一步。每个项目都要准备一条主线，不要按时间流水账讲经历。",
+        engineering: "落地层面要补数据来源、标注质量、baseline公平性、消融设计、统计显著性、复现条件和业务指标。如果面试官质疑cost或场景，要先承认约束，再拆训练成本、推理成本、数据成本和工程复杂度。",
+        evaluation: "评测要把论文指标和真实业务指标连接起来。可以讲哪些场景收益明显，哪些场景不适用，如何做AB实验或人工评测。常见坑是硬辩方法一定更好，或者只报结果不解释限制。"
+      },
+      company: {
+        core: "这类题的本质是把同一套大模型能力映射到不同公司的业务和团队技术路线。面试官会看回答是否了解目标团队，而不是把所有公司都用同一套回答糊过去。",
+        mechanics: "回答时先抽象公司关注的能力：腾讯青云偏项目深挖和业务结合，字节Seed偏训练方案和模型能力提升，Kimi偏长上下文和Agent，DeepSeek偏低成本推理训练和RLVR，智谱偏GLM和Agent应用，小米MiMo偏reasoning-first和端侧生态。",
+        engineering: "落地时要把当前方向嵌进去：后训练可以讲reward、rollout和评测闭环，Agentic RL可以讲harness、工具调用轨迹和任务成功率，RAG可以讲检索质量和引用可信度，推理系统可以讲KV cache和服务成本。",
+        evaluation: "评估公司专项回答时，看是否能说出具体业务场景、技术风险、转正可交付和三个月实习计划。常见坑是只聊公司新闻，不知道模型技术路线，也不能把项目迁移到团队问题上。"
+      },
+      coding: {
+        core: "这类题的本质是工程基本功和大模型核心算子的可解释实现。人才计划里coding不一定很难，但会暴露候选人是否理解张量形状、边界条件、复杂度和可测试性。",
+        mechanics: "回答时先定义输入输出、形状、状态或数据结构，再写最小正确版本。MHA题要把QKV、mask、softmax维度讲清，采样题要讲概率归一和索引映射，trainer题要讲数据流和mask而不是只写公式。",
+        engineering: "工程落地要补测试策略：小shape单元测试、数值稳定、随机种子、非法输入、padding mask、复杂度和内存占用。真实训练代码还要返回logprob、reward、loss分解和日志，方便debug。",
+        evaluation: "评测不只看代码跑通，还要看能否解释为什么这样写、哪里可能错、怎么扩展到batch或GPU实现。常见坑是急着写代码，忘记状态定义、边界条件和维度检查。"
+      }
+    };
+
+    function makeDeepDiveAnswer({ category, topic, question, keys, followUps, pitfalls, source, company, difficulty, verified }) {
+      const frame = DEEP_DIVE_FRAMES[category] || DEEP_DIVE_FRAMES.post;
+      const companyLine = company ? `如果放到「${company}」语境里，回答要把技术机制落到团队可能关心的成本、指标、工程闭环和业务验收上。` : "";
+      const keyLines = keys.map((x, i) => `${i + 1}. ${x}。`).join("\n");
+      const followLine = followUps.length ? followUps.map(x => `「${x}」`).join("、") : "面试官可能继续追问适用边界、失败案例和工程实现。";
+      const pitfallLine = pitfalls.length ? pitfalls.join("；") : "只背概念，不解释机制、约束和评测。";
+      const checked = verified || verifiedChecks({ category, topic, question, source });
+      const checkedLines = formatCheckLines(checked);
+      const sourceLinks = (source.urls || []).map(item => `${item.label}: ${item.url}`).join("\n");
+
+      return [
+        `一、问题本质\n${frame.core}`,
+        `二、这题应该抓住的机制\n题目是「${question}」。先不要急着堆名词，要把「${topic}」放回系统链路里理解。关键点可以按下面三层展开：\n${keyLines}\n这三点的顺序也适合面试口述：先给定义，再讲机制，最后讲适用边界和风险。`,
+        `三、详细原理\n${frame.mechanics}\n联网校准点：\n${checkedLines}\n进一步展开时，把输入、输出、训练信号、状态更新和约束项逐个说清。算法题讲目标函数或数据流，系统题讲瓶颈位置，项目题讲假设为什么成立。`,
+        `四、工程落地\n${frame.engineering}\n${companyLine} 回答可主动连接到当前方向：后训练看reward和rollout，Agentic RL看trajectory和harness，RAG看召回和引用，推理系统看KV cache和batching。`,
+        `五、评测和风险\n${frame.evaluation}\n这题最容易踩的坑是：${pitfallLine}。所以回答结尾最好主动补一句如何验证，包括离线benchmark、人工抽检、回归测试、线上AB或任务成功率。`,
+        `六、追问准备\n高概率追问包括：${followLine}。准备时不要只背标准答案，最好给出实验版本，例如控制变量、记录哪些曲线、如何判断失败、下一步如何修。`,
+        `七、参考依据\n本题标准答案主要按「${source.title || source.type}」校准，来源类型是${source.type}，置信度为${source.confidence}。公开面经和八股只用于总结问法，技术细节优先以论文、官方文档和框架文档为准。\n${sourceLinks}`
+      ].join("\n\n");
+    }
+
+    function cleanOralAnswer(text) {
+      return text.replaceAll("自我", "自身");
+    }
+
+    function buildQuestionBank() {
+      const result = [];
+      Object.entries(BANK).forEach(([category, items]) => {
+        items.forEach((item, index) => {
+          const [topic, question, keys, followUps, pitfalls, sourceKey, difficulty, company] = item;
+          const source = sourceFor(sourceKey);
+          const id = `${category}-${String(index + 1).padStart(3, "0")}`;
+          const lead = keys[0] || topic;
+          const second = keys[1] || "再解释输入输出和适用边界";
+          const third = keys[2] || "最后补评测和失败模式";
+          const verified = verifiedChecks({ category, topic, question, source });
+          const calibration = verified[0] ? `校准点：${verified[0]}` : "校准点：技术细节以论文、官方文档和可复现实现为准。";
+          result.push({
+            id,
+            category,
+            company: company || categoryLabel(category),
+            difficulty: difficulty || "基础",
+            question,
+            oralAnswer: cleanOralAnswer(`结论：${lead}。关键机制是：${second}。落地判断是：${third}。${calibration}`),
+            deepDiveAnswer: makeDeepDiveAnswer({ category, topic, question, keys, followUps, pitfalls, source, company: company || categoryLabel(category), difficulty, verified }),
+            followUps,
+            pitfalls,
+            personalHook: HOOKS[category],
+            sourceType: source.type,
+            sources: source.urls,
+            confidence: source.confidence,
+            masteryLevel: 0,
+            topic
+          });
+        });
+      });
+      return result;
+    }
+
+    const questions = buildQuestionBank();
+    const STORAGE_KEY = "llm-interview-drill-180-v1";
+    const SESSION_KEY = "llm-interview-drill-history-v1";
+
+    const els = {};
+    let state = loadState();
+    let app = {
+      mode: "challenge",
+      activeCategory: "post",
+      activeQuestionId: null,
+      answerVisible: false,
+      search: "",
+      difficulty: "",
+      sourceType: "",
+      wrongCategory: "",
+      questionStart: Date.now(),
+      mock: null,
+      activeAnswerTab: "oral",
+      slideIndex: 0
+    };
+
+    function loadState() {
+      if (typeof localStorage === "undefined") return {};
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveState() {
+      if (typeof localStorage === "undefined") return;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function getProgress(id) {
+      return state[id] || { answered: false, wrongCount: 0, lastReviewedAt: "", bookmarked: false, masteryLevel: 0 };
+    }
+
+    function setProgress(id, patch) {
+      state[id] = { ...getProgress(id), ...patch };
+      saveState();
+    }
+
+    function today() {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    function addStudyDay() {
+      if (typeof localStorage === "undefined") return;
+      let days = [];
+      try {
+        days = JSON.parse(localStorage.getItem(SESSION_KEY)) || [];
+      } catch {
+        days = [];
+      }
+      const t = today();
+      if (!days.includes(t)) {
+        days.push(t);
+        localStorage.setItem(SESSION_KEY, JSON.stringify(days));
+      }
+    }
+
+    function getStudyDays() {
+      if (typeof localStorage === "undefined") return [];
+      try {
+        return JSON.parse(localStorage.getItem(SESSION_KEY)) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function streakCount() {
+      const set = new Set(getStudyDays());
+      let count = 0;
+      const d = new Date();
+      while (set.has(d.toISOString().slice(0, 10))) {
+        count += 1;
+        d.setDate(d.getDate() - 1);
+      }
+      return count;
+    }
+
+    function $(id) {
+      return document.getElementById(id);
+    }
+
+    function initApp() {
+      [
+        "todayCount", "accuracy", "wrongCount", "streak", "recommend", "categoryList",
+        "questionTitle", "questionBadges", "timerText", "timerLabel", "questionText",
+        "answerBtn", "markBad", "markMid", "markGood", "bookmarkBtn", "nextBtn",
+        "answerPanel", "oralAnswer", "followUps", "pitfalls", "deepDive", "personalHook",
+        "sourceList", "questionList", "wrongList", "wrongCategoryFilter", "reviewWrongBtn",
+        "searchInput", "difficultyFilter", "sourceFilter", "modeChallenge", "modeWrong",
+        "modeMock", "mockSummary", "exportBtn", "resetBtn", "tabOral", "tabDeep",
+        "tabFollow", "tabSource", "panelOral", "panelDeep", "panelFollow", "panelSource",
+        "slideIndex", "slideTotal", "slideCategory", "slideQuestion", "slideAnswer",
+        "slidePrev", "slideNext", "slideImportance", "slideImportanceReason", "slideProgressFill",
+        "slideTopicNav", "slideImportanceTrack", "slideMastery", "slidePrevBottom",
+        "slideNextBottom", "slideMarkBad", "slideMarkMid", "slideMarkGood", "slideBookmark",
+        "slideFooterNote", "slideProgressCompact"
+      ].forEach(id => { els[id] = $(id); });
+
+      buildCategoryFilter();
+      bindEvents();
+      chooseInitialQuestion();
+      render();
+      setInterval(renderTimer, 500);
+    }
+
+    function buildCategoryFilter() {
+      els.wrongCategoryFilter.innerHTML = `<option value="">全部主题</option>` + CATEGORIES.map(c => `<option value="${c.id}">${c.label}</option>`).join("");
+    }
+
+    function bindEvents() {
+      els.modeChallenge.onclick = () => switchMode("challenge");
+      els.modeWrong.onclick = () => switchMode("wrong");
+      els.modeMock.onclick = () => switchMode("mock");
+      els.answerBtn.onclick = toggleAnswer;
+      els.markBad.onclick = () => markCurrent(0);
+      els.markMid.onclick = () => markCurrent(1);
+      els.markGood.onclick = () => markCurrent(2);
+      els.bookmarkBtn.onclick = toggleBookmark;
+      els.nextBtn.onclick = nextQuestion;
+      els.reviewWrongBtn.onclick = () => switchMode("wrong");
+      els.searchInput.oninput = e => { app.search = e.target.value.trim(); renderQuestionList(); };
+      els.difficultyFilter.onchange = e => { app.difficulty = e.target.value; renderQuestionList(); };
+      els.sourceFilter.onchange = e => { app.sourceType = e.target.value; renderQuestionList(); };
+      els.wrongCategoryFilter.onchange = e => { app.wrongCategory = e.target.value; renderWrongBook(); };
+      els.exportBtn.onclick = exportProgress;
+      els.resetBtn.onclick = resetProgress;
+      els.slidePrev.onclick = () => moveSlide(-1);
+      els.slideNext.onclick = () => moveSlide(1);
+      els.slidePrevBottom.onclick = () => moveSlide(-1);
+      els.slideNextBottom.onclick = () => moveSlide(1);
+      els.slideMarkBad.onclick = () => markCurrent(0);
+      els.slideMarkMid.onclick = () => markCurrent(1);
+      els.slideMarkGood.onclick = () => markCurrent(2);
+      els.slideBookmark.onclick = toggleBookmark;
+      ["tabOral", "tabDeep", "tabFollow", "tabSource"].forEach(id => {
+        els[id].onclick = () => setAnswerTab(els[id].dataset.tab);
+      });
+      document.addEventListener("keydown", handleKey);
+    }
+
+    function switchMode(mode) {
+      app.mode = mode;
+      app.answerVisible = false;
+      app.activeAnswerTab = "oral";
+      app.mockSummaryVisible = false;
+      if (mode === "mock") startMock();
+      if (mode === "wrong") {
+        const pool = wrongPool();
+        app.activeQuestionId = pool[0]?.id || currentQuestion()?.id || questions[0].id;
+      }
+      if (mode === "challenge") {
+        app.activeQuestionId = categoryPool(app.activeCategory)[0]?.id || questions[0].id;
+      }
+      app.questionStart = Date.now();
+      render();
+    }
+
+    function startMock() {
+      const ids = shuffle([...questions]).slice(0, 8).map(q => q.id);
+      app.mock = { ids, index: 0, startedAt: Date.now(), results: [] };
+      app.activeQuestionId = ids[0];
+      app.activeAnswerTab = "oral";
+      app.questionStart = Date.now();
+    }
+
+    function chooseInitialQuestion() {
+      const first = categoryPool(app.activeCategory)[0] || questions[0];
+      app.activeQuestionId = first.id;
+    }
+
+    function categoryPool(category) {
+      return questions.filter(q => q.category === category);
+    }
+
+    function currentQuestion() {
+      return questions.find(q => q.id === app.activeQuestionId) || questions[0];
+    }
+
+    function filteredQuestions() {
+      const term = app.search.toLowerCase();
+      let pool = app.mode === "wrong" ? wrongPool() : categoryPool(app.activeCategory);
+      if (app.difficulty) pool = pool.filter(q => q.difficulty === app.difficulty);
+      if (app.sourceType) pool = pool.filter(q => q.sourceType === app.sourceType);
+      if (term) {
+        pool = pool.filter(q => `${q.question} ${q.topic} ${q.company} ${q.category}`.toLowerCase().includes(term));
+      }
+      return pool;
+    }
+
+    function wrongPool() {
+      return questions
+        .filter(q => {
+          const p = getProgress(q.id);
+          return p.bookmarked || p.wrongCount > 0 || (p.answered && p.masteryLevel < 2);
+        })
+        .sort((a, b) => {
+          const pa = getProgress(a.id);
+          const pb = getProgress(b.id);
+          return (pb.wrongCount - pa.wrongCount) || (pa.masteryLevel - pb.masteryLevel);
+        });
+    }
+
+    function toggleAnswer() {
+      app.answerVisible = !app.answerVisible;
+      if (app.answerVisible) app.activeAnswerTab = "oral";
+      renderQuestion();
+      renderAnswerTabs();
+    }
+
+    function setAnswerTab(tab) {
+      app.activeAnswerTab = tab;
+      renderAnswerTabs();
+    }
+
+    function markCurrent(level) {
+      const q = currentQuestion();
+      const p = getProgress(q.id);
+      setProgress(q.id, {
+        answered: true,
+        masteryLevel: level,
+        wrongCount: level === 0 ? p.wrongCount + 1 : p.wrongCount,
+        lastReviewedAt: today()
+      });
+      addStudyDay();
+      if (app.mode === "mock" && app.mock) {
+        app.mock.results.push({ id: q.id, level });
+      }
+      render();
+    }
+
+    function toggleBookmark() {
+      const q = currentQuestion();
+      const p = getProgress(q.id);
+      setProgress(q.id, { bookmarked: !p.bookmarked, lastReviewedAt: today() });
+      render();
+    }
+
+    function nextQuestion() {
+      if (app.mode === "mock" && app.mock) {
+        if (app.mock.index < app.mock.ids.length - 1) {
+          app.mock.index += 1;
+          app.activeQuestionId = app.mock.ids[app.mock.index];
+          app.answerVisible = false;
+          app.activeAnswerTab = "oral";
+          app.questionStart = Date.now();
+          render();
+        } else {
+          showMockSummary();
+        }
+        return;
+      }
+      const pool = filteredQuestions();
+      const idx = Math.max(0, pool.findIndex(q => q.id === app.activeQuestionId));
+      const next = pool[(idx + 1) % pool.length] || questions[0];
+      app.activeQuestionId = next.id;
+      app.answerVisible = false;
+      app.activeAnswerTab = "oral";
+      app.questionStart = Date.now();
+      render();
+    }
+
+    function render() {
+      renderModeButtons();
+      renderDashboard();
+      renderCategories();
+      renderQuestion();
+      renderAnswerTabs();
+      renderQuestionList();
+      renderWrongBook();
+      renderTimer();
+      renderSlide();
+    }
+
+    function renderModeButtons() {
+      els.modeChallenge.classList.toggle("active", app.mode === "challenge");
+      els.modeWrong.classList.toggle("active", app.mode === "wrong");
+      els.modeMock.classList.toggle("active", app.mode === "mock");
+    }
+
+    function renderDashboard() {
+      const progress = questions.map(q => getProgress(q.id));
+      const answered = progress.filter(p => p.answered).length;
+      const mastered = progress.filter(p => p.masteryLevel === 2).length;
+      const wrong = progress.filter(p => p.bookmarked || p.wrongCount > 0 || (p.answered && p.masteryLevel < 2)).length;
+      const todayDone = progress.filter(p => p.lastReviewedAt === today()).length;
+      els.todayCount.textContent = todayDone;
+      els.accuracy.textContent = answered ? `${Math.round(mastered / answered * 100)}%` : "0%";
+      els.wrongCount.textContent = wrong;
+      els.streak.textContent = streakCount();
+      els.recommend.textContent = recommendCategory();
+    }
+
+    function recommendCategory() {
+      const scores = CATEGORIES.map(cat => {
+        const pool = categoryPool(cat.id);
+        const mastered = pool.filter(q => getProgress(q.id).masteryLevel === 2).length;
+        return { label: cat.label, score: mastered / pool.length };
+      }).sort((a, b) => a.score - b.score);
+      return scores[0]?.label || "后训练 RL";
+    }
+
+    function renderCategories() {
+      els.categoryList.innerHTML = CATEGORIES.map(cat => {
+        const pool = categoryPool(cat.id);
+        const mastered = pool.filter(q => getProgress(q.id).masteryLevel === 2).length;
+        const width = Math.round(mastered / pool.length * 100);
+        const active = app.activeCategory === cat.id && app.mode !== "wrong" ? "active" : "";
+        return `<button class="category-btn ${active}" data-category="${cat.id}">
+          <strong>${cat.label}</strong><span class="muted">${mastered}/${pool.length}</span>
+          <div class="progress"><span style="width:${width}%"></span></div>
+        </button>`;
+      }).join("");
+      els.categoryList.querySelectorAll("button").forEach(btn => {
+        btn.onclick = () => {
+          app.activeCategory = btn.dataset.category;
+          app.mode = "challenge";
+          app.activeQuestionId = categoryPool(app.activeCategory)[0].id;
+          app.answerVisible = false;
+          app.activeAnswerTab = "oral";
+          app.questionStart = Date.now();
+          render();
+        };
+      });
+    }
+
+    function renderQuestion() {
+      const q = currentQuestion();
+      const p = getProgress(q.id);
+      els.questionTitle.textContent = `${categoryLabel(q.category)} · ${q.topic}`;
+      const levelClass = p.masteryLevel === 2 ? "green" : p.masteryLevel === 1 ? "orange" : p.answered ? "red" : "blue";
+      const levelText = p.masteryLevel === 2 ? "掌握" : p.masteryLevel === 1 ? "模糊" : p.answered ? "不会" : "未练";
+      els.questionBadges.innerHTML = [
+        `<span class="badge blue">${q.company}</span>`,
+        `<span class="badge">${q.difficulty}</span>`,
+        `<span class="badge ${levelClass}">${levelText}</span>`,
+        p.bookmarked ? `<span class="badge red">错题本</span>` : ""
+      ].join("");
+      els.questionText.textContent = q.question;
+      els.answerPanel.classList.toggle("visible", app.answerVisible);
+      els.answerBtn.textContent = app.answerVisible ? "隐藏答案" : "显示答案";
+      els.oralAnswer.textContent = q.oralAnswer;
+      els.deepDive.textContent = q.deepDiveAnswer;
+      els.followUps.innerHTML = q.followUps.map(x => `<li>${x}</li>`).join("");
+      els.pitfalls.innerHTML = q.pitfalls.map(x => `<li>${x}</li>`).join("");
+      els.personalHook.textContent = q.personalHook;
+      els.bookmarkBtn.textContent = p.bookmarked ? "移出错题 B" : "加入错题 B";
+      els.sourceList.innerHTML = q.sources.map(s => `<a href="${s.url}" target="_blank" rel="noreferrer">${s.label}</a>`).join("");
+      if (!els.sourceList.innerHTML) els.sourceList.innerHTML = `<span class="muted">无外部链接</span>`;
+    }
+
+    function renderAnswerTabs() {
+      const map = {
+        oral: ["tabOral", "panelOral"],
+        deep: ["tabDeep", "panelDeep"],
+        follow: ["tabFollow", "panelFollow"],
+        source: ["tabSource", "panelSource"]
+      };
+      Object.entries(map).forEach(([key, [tabId, panelId]]) => {
+        const active = app.activeAnswerTab === key;
+        els[tabId].classList.toggle("active", active);
+        els[tabId].setAttribute("aria-selected", active ? "true" : "false");
+        els[panelId].classList.toggle("active", active);
+      });
+    }
+
+    function currentSlideIndex() {
+      const idx = questions.findIndex(q => q.id === app.activeQuestionId);
+      return idx >= 0 ? idx : app.slideIndex;
+    }
+
+    function moveSlide(delta) {
+      const next = (currentSlideIndex() + delta + questions.length) % questions.length;
+      app.slideIndex = next;
+      app.activeQuestionId = questions[next].id;
+      app.answerVisible = true;
+      app.activeAnswerTab = "oral";
+      app.questionStart = Date.now();
+      render();
+    }
+
+    function normalizedDeepDive(q) {
+      return q.deepDiveAnswer
+        .replaceAll("一、问题本质", "问题本质")
+        .replaceAll("二、这题应该抓住的机制", "关键机制")
+        .replaceAll("三、详细原理", "详细原理")
+        .replaceAll("四、工程落地", "工程落地")
+        .replaceAll("五、评测和风险", "评测和风险")
+        .replaceAll("六、追问准备", "追问准备")
+        .replaceAll("七、参考依据", "参考依据");
+    }
+
+    function escapeHtml(text) {
+      return String(text || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function deepDiveSections(q) {
+      const labels = "问题本质|关键机制|详细原理|工程落地|评测和风险|追问准备|参考依据";
+      const regex = new RegExp(`(${labels})\\n([\\s\\S]*?)(?=\\n\\n(?:${labels})\\n|$)`, "g");
+      const sections = [];
+      let match;
+      const detailed = normalizedDeepDive(q);
+      while ((match = regex.exec(detailed)) !== null) {
+        sections.push({ title: match[1], body: match[2].trim() });
+      }
+      return sections.length ? sections : [{ title: "详细解析", body: detailed }];
+    }
+
+    function listHtml(items, ordered = false) {
+      const tag = ordered ? "ol" : "ul";
+      const body = items.length
+        ? items.map(item => `<li>${escapeHtml(item)}</li>`).join("")
+        : `<li>重点准备适用边界、失败案例和工程验证。</li>`;
+      return `<${tag}>${body}</${tag}>`;
+    }
+
+    function mergedSlideAnswerHtml(q) {
+      const sections = deepDiveSections(q)
+        .filter(section => section.title !== "参考依据")
+        .slice(0, 5)
+        .map(section => `<section class="slide-answer-section">
+          <h2>${escapeHtml(section.title)}</h2>
+          <p>${escapeHtml(section.body)}</p>
+        </section>`)
+        .join("");
+      const followUps = q.followUps.length
+        ? q.followUps
+        : ["适用边界是什么？", "失败案例怎么定位？", "如何用实验验证收益？"];
+      const pitfalls = q.pitfalls.length
+        ? q.pitfalls
+        : ["只背概念，不补机制、指标和限制。"];
+      const sources = q.sources.length
+        ? q.sources.map(x => x.label)
+        : ["无外部链接"];
+
+      return `<section class="slide-answer-lead">
+        <h2>面试回答</h2>
+        <p>${escapeHtml(q.oralAnswer)}</p>
+      </section>
+      <div class="slide-answer-columns">
+        ${sections}
+        <section class="slide-recall">
+          <h2>追问与落地检查</h2>
+          <div class="slide-recall-grid">
+            <div>
+              <h3>结合简历</h3>
+              <p>${escapeHtml(q.personalHook)}</p>
+            </div>
+            <div>
+              <h3>高频追问</h3>
+              ${listHtml(followUps, true)}
+            </div>
+            <div>
+              <h3>常见坑 / 来源</h3>
+              ${listHtml(pitfalls.concat(sources), false)}
+            </div>
+          </div>
+        </section>
+      </div>`;
+    }
+
+    function questionImportance(q) {
+      let score = 1;
+      const reasons = [];
+      if (["post", "agent", "infer", "company"].includes(q.category)) {
+        score += 1;
+        reasons.push("贴近大模型人才计划高频方向");
+      }
+      if (q.difficulty.includes("高频") || q.difficulty.includes("进阶")) {
+        score += 1;
+        reasons.push("容易被追问机制和边界");
+      }
+      if (q.category === "company") {
+        score += 1;
+        reasons.push("公司专项题可直接迁移到面试动机和业务落地");
+      }
+      if (/PPO|DPO|GRPO|DAPO|RLHF|Agent|RAG|KV|MHA|vLLM|FlashAttention|LoRA|ZeRO|FSDP/i.test(`${q.topic} ${q.question}`)) {
+        score += 1;
+        reasons.push("属于大模型面试核心术语");
+      }
+      const level = Math.min(3, score);
+      return {
+        level,
+        label: level === 3 ? "高" : level === 2 ? "中" : "低",
+        reason: reasons.slice(0, 2).join("；") || "基础概念题，适合快速过一遍"
+      };
+    }
+
+    function questionImportanceTrack(q, importance) {
+      if (q.category === "project" || q.category === "company") return "landing";
+      if (importance.level === 3) return "core";
+      if (q.difficulty.includes("进阶") || q.difficulty.includes("高频")) return "advanced";
+      return "basic";
+    }
+
+    function renderSlideTopicNav() {
+      els.slideTopicNav.innerHTML = CATEGORIES.map(cat => {
+        const pool = categoryPool(cat.id);
+        const mastered = pool.filter(q => getProgress(q.id).masteryLevel === 2).length;
+        const active = app.activeCategory === cat.id ? "active" : "";
+        return `<button class="slide-topic-btn ${active}" data-category="${cat.id}">
+          ${cat.label}<small>${mastered}/${pool.length}</small>
+        </button>`;
+      }).join("");
+      els.slideTopicNav.querySelectorAll("button").forEach(btn => {
+        btn.onclick = () => {
+          app.activeCategory = btn.dataset.category;
+          app.mode = "challenge";
+          const first = categoryPool(app.activeCategory)[0] || questions[0];
+          app.activeQuestionId = first.id;
+          app.slideIndex = questions.findIndex(q => q.id === first.id);
+          app.answerVisible = true;
+          app.activeAnswerTab = "oral";
+          app.questionStart = Date.now();
+          render();
+        };
+      });
+    }
+
+    function renderSlideImportanceTrack(activeKey) {
+      const markers = [
+        ["basic", "基础速过"],
+        ["core", "高频核心"],
+        ["advanced", "进阶追问"],
+        ["landing", "项目落地"]
+      ];
+      els.slideImportanceTrack.innerHTML = markers.map(([key, label]) =>
+        `<span class="slide-marker ${key === activeKey ? "active" : ""}">${label}</span>`
+      ).join("");
+    }
+
+    function renderSlide() {
+      const idx = currentSlideIndex();
+      const q = questions[idx] || questions[0];
+      const importance = questionImportance(q);
+      const progress = getProgress(q.id);
+      const masteryText = progress.masteryLevel === 2 ? "掌握" : progress.masteryLevel === 1 ? "模糊" : progress.answered ? "不会" : "未练";
+      const trackKey = questionImportanceTrack(q, importance);
+      app.slideIndex = idx;
+      app.activeCategory = q.category;
+      els.slideIndex.textContent = String(idx + 1);
+      els.slideTotal.textContent = String(questions.length);
+      els.slideImportance.textContent = `重要性 ${importance.label}`;
+      els.slideImportance.dataset.level = String(importance.level);
+      els.slideImportanceReason.textContent = importance.reason;
+      els.slideProgressFill.style.width = `${Math.round(((idx + 1) / questions.length) * 100)}%`;
+      const categoryText = categoryLabel(q.category);
+      const companyText = q.company && q.company !== categoryText ? ` · ${q.company}` : "";
+      els.slideCategory.textContent = `${categoryText}${companyText} · ${q.difficulty}`;
+      els.slideQuestion.textContent = q.question;
+      els.slideAnswer.innerHTML = mergedSlideAnswerHtml(q);
+      els.slideMastery.textContent = progress.bookmarked ? `${masteryText} · 错题` : masteryText;
+      els.slideMastery.dataset.state = masteryText;
+      els.slideMarkBad.classList.toggle("active", progress.answered && progress.masteryLevel === 0);
+      els.slideMarkMid.classList.toggle("active", progress.masteryLevel === 1);
+      els.slideMarkGood.classList.toggle("active", progress.masteryLevel === 2);
+      els.slideBookmark.classList.toggle("active", Boolean(progress.bookmarked));
+      els.slideBookmark.textContent = progress.bookmarked ? "移出错题" : "加入错题";
+      els.slideFooterNote.textContent = `${categoryLabel(q.category)} · ${importance.label}重要性 · ${progress.wrongCount || 0}次不会`;
+      renderSlideTopicNav();
+      renderSlideImportanceTrack(trackKey);
+    }
+
+    function renderQuestionList() {
+      const pool = filteredQuestions();
+      els.questionList.innerHTML = pool.map(q => {
+        const p = getProgress(q.id);
+        const mark = p.masteryLevel === 2 ? "掌握" : p.masteryLevel === 1 ? "模糊" : p.answered ? "不会" : "未练";
+        return `<button class="qpick ${q.id === app.activeQuestionId ? "active" : ""}" data-id="${q.id}">
+          <strong>${q.topic}</strong>
+          <span>${q.difficulty} · ${q.company} · ${mark}</span>
+        </button>`;
+      }).join("") || `<p class="muted">当前筛选下没有题目。</p>`;
+      els.questionList.querySelectorAll("button").forEach(btn => {
+        btn.onclick = () => {
+          app.activeQuestionId = btn.dataset.id;
+          app.answerVisible = false;
+          app.activeAnswerTab = "oral";
+          app.questionStart = Date.now();
+          render();
+        };
+      });
+    }
+
+    function renderWrongBook() {
+      let pool = wrongPool();
+      if (app.wrongCategory) pool = pool.filter(q => q.category === app.wrongCategory);
+      els.wrongList.innerHTML = pool.slice(0, 24).map(q => {
+        const p = getProgress(q.id);
+        return `<div class="wrong-card">
+          <strong>${q.topic}</strong>
+          <p class="muted">${categoryLabel(q.category)} · ${q.company} · 错 ${p.wrongCount} 次</p>
+          <button data-id="${q.id}">复习这题</button>
+        </div>`;
+      }).join("") || `<p class="muted">暂无错题。先刷一组题，标记“不会”或加入错题即可出现。</p>`;
+      els.wrongList.querySelectorAll("button").forEach(btn => {
+        btn.onclick = () => {
+          app.mode = "wrong";
+          app.activeQuestionId = btn.dataset.id;
+          app.answerVisible = false;
+          app.activeAnswerTab = "oral";
+          app.questionStart = Date.now();
+          render();
+        };
+      });
+    }
+
+    function renderTimer() {
+      if (app.mode === "mock" && app.mock) {
+        const elapsed = Math.floor((Date.now() - app.questionStart) / 1000);
+        const remain = Math.max(0, 90 - elapsed);
+        els.timerText.textContent = formatTime(remain);
+        els.timerLabel.textContent = `模拟 ${app.mock.index + 1}/8`;
+        if (remain === 0) els.timerText.style.color = "var(--red)";
+        else els.timerText.style.color = "var(--blue)";
+        return;
+      }
+      const elapsed = Math.floor((Date.now() - app.questionStart) / 1000);
+      els.timerText.textContent = formatTime(elapsed);
+      els.timerLabel.textContent = "本题用时";
+      els.timerText.style.color = "var(--blue)";
+    }
+
+    function formatTime(seconds) {
+      const m = String(Math.floor(seconds / 60)).padStart(2, "0");
+      const s = String(seconds % 60).padStart(2, "0");
+      return `${m}:${s}`;
+    }
+
+    function showMockSummary() {
+      const results = app.mock?.results || [];
+      const weak = results.filter(r => r.level < 2).map(r => questions.find(q => q.id === r.id)).filter(Boolean);
+      const grouped = {};
+      weak.forEach(q => { grouped[categoryLabel(q.category)] = (grouped[categoryLabel(q.category)] || 0) + 1; });
+      const lines = Object.entries(grouped).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k}: ${v}题`).join("，") || "本轮没有明显弱项";
+      els.mockSummary.classList.add("visible");
+      els.mockSummary.innerHTML = `<div class="note"><strong>模拟面试结束。</strong><br>薄弱点：${lines}。建议下一轮先刷错题复习。</div>`;
+    }
+
+    function handleKey(event) {
+      const tag = event.target.tagName;
+      if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        moveSlide(-1);
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        moveSlide(1);
+      } else if (event.code === "Space") {
+        event.preventDefault();
+        toggleAnswer();
+      } else if (event.key === "1") {
+        markCurrent(0);
+      } else if (event.key === "2") {
+        markCurrent(1);
+      } else if (event.key === "3") {
+        markCurrent(2);
+      } else if (event.key.toLowerCase() === "b") {
+        toggleBookmark();
+      }
+    }
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function exportProgress() {
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        totalQuestions: questions.length,
+        state
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "llm_interview_drill_progress.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function resetProgress() {
+      if (!confirm("确认清空本页所有练习进度和错题记录？")) return;
+      state = {};
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(SESSION_KEY);
+      app.answerVisible = false;
+      app.questionStart = Date.now();
+      render();
+    }
+
+    if (typeof window !== "undefined") {
+      window.LLM_DRILL_QUESTIONS = questions;
+      window.LLM_DRILL_CATEGORIES = CATEGORIES;
+    } else {
+      globalThis.__LLM_DRILL_TEST__ = { questions, CATEGORIES };
+    }
+
+    if (typeof document !== "undefined") {
+      initApp();
+    }
+  </script>
+</body>
+</html>

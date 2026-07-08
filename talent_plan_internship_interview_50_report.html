@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>国内 AI 大模型人才计划实习面经 88 条样本调研</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --ink: #172033;
+      --muted: #5d6678;
+      --line: #dfe5ee;
+      --blue: #1e63d6;
+      --blue-soft: #eaf2ff;
+      --green: #167044;
+      --green-soft: #e8f6ef;
+      --orange: #a45a00;
+      --orange-soft: #fff3df;
+      --red: #b42318;
+      --red-soft: #fff0ef;
+      --shadow: 0 14px 34px rgba(27, 39, 65, 0.08);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.58;
+    }
+
+    a { color: var(--blue); text-decoration: none }
+    a:hover { text-decoration: underline }
+
+    .page {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 34px 20px 72px;
+    }
+
+    header, section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    header { padding: 30px }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 24px;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+      letter-spacing: 0;
+    }
+
+    p { margin: 0 0 12px }
+
+    .subtitle {
+      max-width: 980px;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .meta, .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .pill, .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .pill { background: var(--blue-soft); color: #164b9c }
+    .tag { background: #eef2f7; color: #344054 }
+    .high { background: var(--green-soft); color: var(--green) }
+    .medium { background: var(--orange-soft); color: var(--orange) }
+    .low { background: var(--red-soft); color: var(--red) }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .grid.stats { grid-template-columns: repeat(4, minmax(0, 1fr)) }
+    .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+    .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)) }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat {
+      color: var(--blue);
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .muted { color: var(--muted) }
+
+    section {
+      margin-top: 18px;
+      padding: 24px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      min-width: 1280px;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #f8fafc;
+      color: #344054;
+      font-size: 12px;
+      font-weight: 760;
+    }
+
+    tbody tr:hover { background: #fbfdff }
+
+    .source-title {
+      max-width: 280px;
+      font-weight: 700;
+    }
+
+    .questions {
+      max-width: 430px;
+    }
+
+    .rank-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .rank-item {
+      display: grid;
+      grid-template-columns: 168px 1fr 48px;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .bar {
+      height: 10px;
+      border-radius: 999px;
+      background: #e8edf5;
+      overflow: hidden;
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #1e63d6, #20a7a0);
+    }
+
+    .company-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .company {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      background: #fbfcff;
+    }
+
+    ul {
+      margin: 8px 0 0 18px;
+      padding: 0;
+    }
+
+    li { margin: 5px 0 }
+
+    .note {
+      border-left: 4px solid var(--blue);
+      background: var(--blue-soft);
+      padding: 12px 14px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      color: #183b73;
+    }
+
+    .footer {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    @media (max-width: 860px) {
+      .page { padding: 20px 12px 56px }
+      header, section { padding: 18px }
+      .grid.stats, .grid.two, .grid.three, .company-grid { grid-template-columns: 1fr }
+      .rank-item { grid-template-columns: 1fr }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>国内 AI 大模型人才计划实习面经调研</h1>
+      <p class="subtitle">
+        本报告面向大模型后训练、Agentic RL、RAG Agent、工具调用、自进化方向，去重整理 88 条公开帖子、面经线索和技术背景样本。高频问题统计只按高/中置信样本计算。Kimi、DeepSeek、智谱 GLM、小米 MiMo 已纳入样本表，但部分仅能读到搜索标题或技术资料，因此单独标注置信度，避免把岗位宣传或技术推断当作完整面经。
+      </p>
+      <div class="meta">
+        <span class="pill">更新日期：2026-07-08</span>
+        <span class="pill">样本总数：88</span>
+        <span class="pill">核心方向：后训练 / Agent / RAG / 推理系统</span>
+        <span class="pill">来源：小红书为主，含用户贴入公开摘录</span>
+      </div>
+    </header>
+
+    <div class="grid stats">
+      <div class="card"><div class="stat">88</div><div class="muted">去重样本</div></div>
+      <div class="card"><div class="stat">15</div><div class="muted">公司或计划族</div></div>
+      <div class="card"><div class="stat">25+</div><div class="muted">高置信详述样本</div></div>
+      <div class="card"><div class="stat">6</div><div class="muted">仍需二次核验方向</div></div>
+    </div>
+
+    <section>
+      <h2>采样方法与置信度</h2>
+      <p class="note">高置信表示读到正文或用户提供了完整面经内容。中置信表示搜索结果标题明确为面经，但正文未完整读取，问题字段只记录已知信息。低置信表示招聘、薪资、求问、流程或未读全文线索，只用于覆盖生态和提示后续补查。</p>
+      <div class="legend">
+        <span class="tag high">高：正文/详述</span>
+        <span class="tag medium">中：标题明确/部分信息</span>
+        <span class="tag low">低：招聘/缺口/未读全文</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>50+ 条样本清单</h2>
+      <div class="table-wrap">
+        <table id="sample-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>公司/计划</th>
+              <th>方向</th>
+              <th>来源标题</th>
+              <th>轮次/流程</th>
+              <th>具体问题与技术点</th>
+              <th>Coding / PPT / HR</th>
+              <th>可信度</th>
+              <th>链接</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>各家公司面试风格对比</h2>
+      <div class="company-grid" id="company-style"></div>
+    </section>
+
+    <section>
+      <h2>高频问题排行榜</h2>
+      <div id="rank-list" class="rank-list"></div>
+    </section>
+
+    <section>
+      <h2>后训练 / Agentic RL / RAG Agent 备战清单</h2>
+      <div class="grid three">
+        <div class="card">
+          <h3>后训练主线</h3>
+          <ul>
+            <li>讲清 SFT、continue SFT、mixed continued training、RLVR、DPO、PPO、GRPO、DAPO 的适用边界。</li>
+            <li>准备 loss、reward、KL、entropy、pass@k、benchmark、训练稳定性、reward hacking 的真实曲线口径。</li>
+            <li>能手写 top-p sampling、GRPO trainer、简单 reward normalization 和 MHA。</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Agentic RL 主线</h3>
+          <ul>
+            <li>把 Agent 任务拆成 state、action、tool call、observation、trajectory、reward、credit assignment。</li>
+            <li>准备如何用 RL 优化 tool router、function calling、长任务成功率、搜索轨迹和自我修正。</li>
+            <li>比较 rule reward、model reward、process reward、outcome reward 与 human preference。</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>工程系统主线</h3>
+          <ul>
+            <li>熟悉 verl、vLLM、Ray、rollout engine、batching、KV cache、GQA、speculative decoding。</li>
+            <li>准备 RAG 召回噪声、重排、fact checking、memory 遗忘曲线、MCP、LangGraph、harness。</li>
+            <li>能解释训练显存、参数/梯度/优化器状态、ZeRO/FSDP/LoRA/QLoRA。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>适合你背景的投递优先级</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>优先级</th>
+              <th>公司/计划</th>
+              <th>原因</th>
+              <th>建议话术</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>腾讯青云，混元，WXG 搜索 Agent</td>
+              <td>青云面经里 RLHF/GRPO、RAG、Agent、推理加速、项目答辩密度最高，和你的 Agentic RL/RAG 背景直接重合。</td>
+              <td>我主要做大模型后训练与 Agentic RL，关注 RAG、工具调用、多轮轨迹和奖励建模，能把科研里的 credit assignment 与业务 Agent 评测闭环结合。</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>字节 Seed / TopSeed</td>
+              <td>官方强调顶尖研究实习，面经问 SFT/RL、专业输出能力训练、CPT/RAG 和业务化训练方案。</td>
+              <td>我希望做能进入基座或豆包核心能力迭代的后训练工作，重点是复杂推理、工具调用和自我改进。</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>美团北斗 / LongCat</td>
+              <td>LongCat 方向同时问基座 VLM、Agent 应用、MCP、function calling、memory 和 RL 优化工具调用。</td>
+              <td>我可以从 Agent 系统、RAG 可靠性、tool router 与 RL 优化长任务成功率切入。</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>快手快Star-X</td>
+              <td>二面直接问 DPO vs RL、RL 稳定性、reward hacking、RAG 召回噪声，很适合后训练和 AI 搜索方向。</td>
+              <td>我能把后训练算法与搜索/推荐/长用户序列场景结合，做可评估的任务成功率优化。</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>阶跃星辰 / MiniMax / REDstar / T-Star</td>
+              <td>阶跃偏纯后训练，MiniMax 偏多模态后训练，REDstar 和 T-Star 则会混合考察算法基础、coding 和业务场景。</td>
+              <td>根据岗位侧重点切换叙事：后训练岗讲指标和收敛，应用岗讲 Agent/RAG，算法综合岗补强 coding 和 ML 基础。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>覆盖不足与二次核验</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>公司/计划</th>
+              <th>本轮证据状态</th>
+              <th>不能直接下结论的原因</th>
+              <th>后续检索建议</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>百度 AIDU</td>
+              <td>有官方项目和岗位信息，但本轮没有稳定读到高质量“大模型人才计划实习面经”。</td>
+              <td>公开结果多为招聘介绍，缺少轮次和具体技术问题。</td>
+              <td>检索“百度 AIDU 大模型算法 一面”“文心 大模型实习 面经”“百度智能体算法实习 面经”。</td>
+            </tr>
+            <tr>
+              <td>华为天才少年 / 盘古 / 2012 Lab</td>
+              <td>能找到相关招聘和大模型背景，但人才计划实习面经样本不稳定。</td>
+              <td>华为面经常按部门和实验室分散，且天才少年多为正式招聘口径。</td>
+              <td>检索“华为 2012 大模型后训练 面经”“盘古大模型 实习 面经”“诺亚 大模型算法 实习”。</td>
+            </tr>
+            <tr>
+              <td>Kimi / Moonshot</td>
+              <td>已补入月之暗面模型能力实习、Kimi 大模型实习、Agent Engineer、大模型一面等标题明确样本，并加入 Kimi K2 技术背景。</td>
+              <td>本轮主要拿到搜索结果标题，未完整读取所有图片正文，所以具体题目仍需二次确认。</td>
+              <td>继续读取“月之暗面模型能力实习生一面凉经”“月之暗面 Agent Engineer 面经”“Kimi 大模型一面”。</td>
+            </tr>
+            <tr>
+              <td>DeepSeek</td>
+              <td>已补入 DeepSeek 暑期实习一面、笔试面经、面试体验等小红书检索结果，并加入 R1、V3/V4 技术背景。</td>
+              <td>部分结果是讨论帖或面试体验帖，不一定都是大模型实习技术面完整复盘。</td>
+              <td>继续读取“DeepSeek 暑期实习 一面挂”“DeepSeek 笔试面经”“DeepSeek vs OpenAI 面试经历分享”。</td>
+            </tr>
+            <tr>
+              <td>智谱 GLM</td>
+              <td>已补入智谱 LLM、智谱大模型 Agent、GUI Agent 实习、暑期实习一二面、算法一面等标题明确样本，并加入 Z.ai/GLM 技术背景。</td>
+              <td>搜索结果足够确认面经存在，但多数正文是图片，未全部 OCR，因此具体问法只做方向性总结。</td>
+              <td>继续读取“智谱 LLM 面经”“智谱 GUI agent 实习岗”“智谱华章算法一面 45min”。</td>
+            </tr>
+            <tr>
+              <td>小米 MiMo</td>
+              <td>已补入 MiMo 顶尖应届多模态大模型、数据岗凉经、skills 上下文问题、算法研究员招聘，并加入 MiMo 技术报告。</td>
+              <td>MiMo 真实技术面经数量少于腾讯/字节/美团，且部分是模型解读或招聘信号。</td>
+              <td>继续读取“小米 MiMo 顶尖应届 多模态大模型 面经”“Mimo 大模型数据岗凉经”“MiMO 面试官 skills 上下文”。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="footer">报告为求职备战用途。小红书帖子可能删除、限流或更换 token，低置信样本不用于强结论。</div>
+  </div>
+
+  <script>
+    const samples = [
+      {c:"腾讯", p:"青云计划", d:"混元/LLM 推理", t:"腾讯青云实习面经", r:"4轮技术/GM/HR", q:"KV cache、带 cache 的 MHA、减少一半 KV cache 的计算影响、speculative decoding 业务化、论文 cost 压力面", e:"MHA 手撕，GM 加面，HR 职规", conf:"高", src:"https://www.xiaohongshu.com/explore/6a09b8350000000007010cab", type:"正文已读", tags:["项目论文","推理系统","coding","GMHR"]},
+      {c:"腾讯", p:"青云计划", d:"大模型 RL", t:"腾讯日常实习 青云计划 面经", r:"三面", q:"RLHF/PPO/DPO/GRPO、DAPO 动态采样、TRL vs verl、vLLM rollout、Ray、训练显存、熵崩溃", e:"MHA、灯泡开关 DP", conf:"高", src:"https://www.xiaohongshu.com/explore/69ec5ab600000000220284b6", type:"用户详述", tags:["后训练RL","推理系统","coding","训练系统"]},
+      {c:"腾讯", p:"青云计划", d:"垂域模型/后训练", t:"腾讯青云计划实习面经", r:"一面二面", q:"增量预训练数据配比、SFT 到什么程度适合 RL、为什么不用 PPO、DPO 数据质量评价、论文细节", e:"字符串只出现一次元素，哈希和二分思路", conf:"高", src:"用户贴入公开摘录，原链接缺失", type:"用户详述", tags:["后训练RL","数据","项目论文","coding"]},
+      {c:"腾讯", p:"青云/技术研究", d:"多模态", t:"腾讯技术研究多模态三面面经", r:"三面+HR", q:"VQ-VAE、codebook 反传、音频文本融合、diffusion、KV cache/GQA、Transformer 变体、RoPE、知识注入", e:"反转链表、股票最大利润", conf:"高", src:"https://www.xiaohongshu.com/explore/67fd0d86000000001c0082bb", type:"用户详述", tags:["多模态","推理系统","coding","项目论文"]},
+      {c:"腾讯", p:"青云计划", d:"研究实习", t:"把青云实习 a 没了", r:"三面+HR", q:"工作经历、研究经历、未来大模型趋势、能否用大模型完成代码需求", e:"一道手撕，允许用大模型辅助", conf:"高", src:"用户贴入公开摘录，原链接缺失", type:"用户详述", tags:["项目论文","coding","GMHR"]},
+      {c:"腾讯", p:"青云计划", d:"NLP/Agent", t:"腾讯青云 NLP 方向 timeline", r:"连续三天三轮+HR", q:"research talk、科研主线、未来 LLM 和 Agent insight", e:"无 coding", conf:"高", src:"用户贴入公开摘录，原链接缺失", type:"用户详述", tags:["项目论文","AgentRAG","GMHR"]},
+      {c:"腾讯", p:"混元青云", d:"推理系统", t:"混元青云计划面经", r:"一面后流程结束", q:"实习经历、推理知识、推理框架、算子开发、推理算法", e:"可选 CUDA 或算法题，easy DP", conf:"中", src:"https://www.xiaohongshu.com/explore/69db8f4d000000002200fe8f", type:"用户详述", tags:["推理系统","coding","训练系统"]},
+      {c:"腾讯", p:"青云计划", d:"RAG/强化学习", t:"腾讯青云实习面经全过程分享", r:"三面+笔试+GM+HR", q:"论文深挖、RAG 召回/rank/embedding、GRPO、DAPO、KL vs 交叉熵、业务结合", e:"最长无重复子串、MHA、DP 笔试、PPT 答辩", conf:"高", src:"https://www.xiaohongshu.com/explore/68b25796000000001d01dbcf", type:"用户详述", tags:["AgentRAG","后训练RL","coding","GMHR","项目论文"]},
+      {c:"腾讯", p:"青云计划", d:"Agent 研究", t:"腾讯青云 agent 研二面看重工程实践", r:"二面", q:"多智能体系统设计、harness、Claude Code/Codex/OpenClaw 差异、网络、云服务、Linux", e:"BST 构建、遍历、格式化打印、删除 node", conf:"高", src:"https://www.xiaohongshu.com/explore/69df12cc000000001b000d05", type:"用户详述", tags:["AgentRAG","工程实践","coding"]},
+      {c:"腾讯", p:"WXG 青云", d:"微信搜索/大模型", t:"WXG 微信青云计划面经", r:"面委两轮+笔试+答辩+HR", q:"上线项目细节、Transformer、RL、博士课题逻辑、未来发展", e:"最长无重复子串、第 k 小、爬台阶、采样器笔试", conf:"高", src:"用户贴入公开摘录，原链接缺失", type:"用户详述", tags:["项目论文","后训练RL","coding","GMHR"]},
+      {c:"腾讯", p:"青云计划", d:"大模型训练", t:"腾讯青云大模型面经", r:"一面二面", q:"verl/AReaL 差异、PPO/GRPO/Reinforce++、项目讨论", e:"路径数量 DP、实现简单 agent", conf:"高", src:"https://www.xiaohongshu.com/explore/689b0f26000000001b035064", type:"正文已读", tags:["后训练RL","AgentRAG","coding","训练系统"]},
+      {c:"腾讯", p:"基座大模型", d:"数据/benchmark/RL", t:"腾讯基座大模型算法凉经", r:"一面", q:"图像视频过滤、长视频 OOM、多模态数据 pipeline、Deep Research 评测、math benchmark、reward function、clip", e:"未见 coding", conf:"高", src:"https://www.xiaohongshu.com/explore/69f2aec7000000001e00f159", type:"正文已读", tags:["数据","多模态","Benchmark","后训练RL"]},
+      {c:"腾讯", p:"混元青云", d:"流程风险", t:"腾讯混元青云实习加面", r:"HR 后回退加面", q:"HR 之后仍可能追加技术面，流程状态可能回滚", e:"流程信息", conf:"中", src:"https://www.xiaohongshu.com/explore/6a2163d40000000038021c80", type:"正文已读", tags:["GMHR"]},
+      {c:"腾讯", p:"混元基模", d:"Code Agent", t:"混元基模 CodeAgent 招实习", r:"招聘信号", q:"CodeAgent、基模、Agent 方向强相关，但非面经", e:"无", conf:"低", src:"https://www.xiaohongshu.com/explore/6a38f87400000000060220f6", type:"招聘信号", tags:["AgentRAG"]},
+      {c:"字节", p:"Top Seed", d:"豆包研究实习", t:"字节跳动 Top Seed 研究实习生专项启动", r:"官方项目", q:"大模型训练、ML 系统、多模态生成/理解、语音、RL 在语音场景应用", e:"官方称同权限资源、高科研自由、竞争薪酬", conf:"高", src:"https://www.xiaohongshu.com/explore/67dcba5400000000070359d8", type:"官方招聘", tags:["后训练RL","多模态","训练系统"]},
+      {c:"字节", p:"Top Seed", d:"大模型", t:"大伙都期待的！字节大模型 topseed 面经来了", r:"多图面经", q:"标题明确为大模型 TopSeed 面经，正文未完整读到", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/67e3f777000000001203d2a1", type:"搜索结果识别", tags:["项目论文","后训练RL"]},
+      {c:"字节", p:"Top Seed", d:"大模型", t:"字节 Top Seed 面经", r:"面经", q:"标题明确，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/67c85294000000002902d0e6", type:"搜索结果识别", tags:["项目论文"]},
+      {c:"字节", p:"Top Seed", d:"一面", t:"Top Seed 一面记录", r:"一面", q:"标题明确，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/68763410000000001c03058c", type:"搜索结果识别", tags:["项目论文"]},
+      {c:"字节", p:"Top Seed", d:"AI 博士", t:"上交 AI 博士秋招，TopSeed 一面已过", r:"一面", q:"标题明确，可能以科研和大模型项目为主，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/68568f260000000011001c57", type:"搜索结果识别", tags:["项目论文","后训练RL"]},
+      {c:"字节", p:"Seed", d:"训练/专业输出", t:"博0字节 Seed 实习二面面经", r:"二面通过", q:"项目训练细节、SFT、RL 训练、如何训练 Doubao 的专业输出能力", e:"无 coding，周五面试后发三面通知", conf:"高", src:"https://www.xiaohongshu.com/explore/69ddbb4c0000000021005e3b", type:"正文已读", tags:["后训练RL","项目论文","数据"]},
+      {c:"字节", p:"Seed", d:"一面", t:"本科字节 Seed 一面面经", r:"一面通过", q:"标题明确为 Seed 一面，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/69d50c7f000000001d018d6b", type:"搜索结果识别", tags:["项目论文"]},
+      {c:"字节", p:"Seed", d:"多模态应用", t:"多模态应用算法实习 Seed 一面面经", r:"一面", q:"标题明确为多模态应用算法，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/69e8c303000000001d019c93", type:"搜索结果识别", tags:["多模态","项目论文"]},
+      {c:"字节", p:"Top Seed", d:"AI Coding", t:"蹲字节 Top Seed 计划 AI coding 面经", r:"求问/蹲面经", q:"说明 AI coding 方向存在面经需求，但不是完整面经", e:"无", conf:"低", src:"https://www.xiaohongshu.com/explore/68b552dc000000001d0272dd", type:"求问", tags:["AgentRAG","coding"]},
+      {c:"字节", p:"Top Seed", d:"AI 博士", t:"AI 普博提前毕业，秋招 TopSeed 二面已过", r:"二面已过", q:"标题明确，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/687b8d230000000012014959", type:"搜索结果识别", tags:["项目论文"]},
+      {c:"字节", p:"前沿技术人才计划", d:"暑期实习", t:"字节前沿技术领域人才计划暑期实习", r:"招聘/项目", q:"人才计划实习信号，具体面试题不足", e:"无", conf:"低", src:"https://www.xiaohongshu.com/explore/69fe0d2e0000000035021830", type:"招聘信号", tags:["项目论文"]},
+      {c:"字节", p:"Seed 基模", d:"多模态预训练", t:"Seed 基模多模态预训练诚招强力实习生", r:"招聘信号", q:"多模态预训练岗位信号，非面经", e:"无", conf:"低", src:"https://www.xiaohongshu.com/explore/6a22a4e2000000002202072f", type:"招聘信号", tags:["多模态","训练系统"]},
+      {c:"小红书", p:"REDstar", d:"大模型", t:"REDstar 大模型实习一面面经", r:"一面 1.5h", q:"实习项目、论文、长上下文、Agent 工作理解、归一化等 LLM 八股、IQ/群论题", e:"中等 coding", conf:"高", src:"https://www.xiaohongshu.com/explore/681db8240000000021003610", type:"正文已读", tags:["AgentRAG","长上下文","coding","项目论文"]},
+      {c:"小红书", p:"ACE 顶尖实习", d:"算法/推荐", t:"小红书 ACE 顶尖实习生计划一面", r:"一面", q:"标题明确，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/69d4bbd80000000021013f21", type:"搜索结果识别", tags:["项目论文","coding"]},
+      {c:"小红书", p:"REDstar", d:"秋招/算法", t:"小红书 Redstar 秋招一面回忆录", r:"一面", q:"标题明确，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/69d21897000000002102ff54", type:"搜索结果识别", tags:["项目论文"]},
+      {c:"小红书", p:"REDstar", d:"社区直播", t:"REDSTAR 面经分享，社区直播", r:"面经分享", q:"标题明确，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/6832c8ca0000000012006f31", type:"搜索结果识别", tags:["项目论文"]},
+      {c:"小红书", p:"REDstar", d:"顶尖人才", t:"实习面经，REDStar 顶尖人才计划", r:"面经/附答案", q:"标题明确，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/68427ddb000000000303c8b6", type:"搜索结果识别", tags:["项目论文","coding"]},
+      {c:"小红书", p:"Hi Lab", d:"顶尖实习", t:"小红书 hi lab 顶尖实习 offer get", r:"offer 贴", q:"offer/timeline 信号，具体面试题不足", e:"无", conf:"中", src:"https://www.xiaohongshu.com/explore/69649e4b0000000009039a11", type:"搜索结果识别", tags:["GMHR"]},
+      {c:"小红书", p:"REDstar", d:"基座模型", t:"最后决定留在小红书 REDstar 做大模型基模了", r:"选择/offer 贴", q:"大模型基模方向信号，具体题不足", e:"无", conf:"中", src:"https://www.xiaohongshu.com/explore/69f1b420000000003502c612", type:"搜索结果识别", tags:["训练系统","项目论文"]},
+      {c:"小红书", p:"排序/REDstar 相关", d:"排序算法", t:"排序中，一面很基础，常规八股+一道 mid", r:"一面", q:"常规八股、排序方向、算法中等题", e:"一道 mid", conf:"中", src:"https://www.xiaohongshu.com/explore/68a5eb35000000001c01074b", type:"搜索结果识别", tags:["coding","推荐搜索"]},
+      {c:"阿里/淘天", p:"T-Star", d:"多模态大模型", t:"淘天 T star 面经", r:"机试+二面+三四面+HR+交叉面", q:"GAN 及变体、概率期望、ROC、决策树/SVM/贝叶斯/KNN 场景、时空复杂度、简历深挖", e:"BFS、位运算、图论、MHA、DP，HR 性格面", conf:"高", src:"https://www.xiaohongshu.com/explore/67ffb831000000001c00ab08", type:"正文已读", tags:["多模态","coding","GMHR","项目论文"]},
+      {c:"阿里系", p:"高德/大模型", d:"大模型算法", t:"高德大模型秋招面经", r:"面经", q:"阿里系大模型面经线索，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/6a4b9f2f0000000017029a6e", type:"搜索结果识别", tags:["项目论文","AgentRAG"]},
+      {c:"美团", p:"北斗计划", d:"大模型应用算法", t:"美团北斗大模型应用算法工程师一面", r:"一面", q:"上下文窗口、memory vs RAG、对话存储、意图识别、遗忘曲线、LangChain/LlamaIndex/LangGraph、MCP、function calling、tool router、RL 优化工具调用", e:"合并区间", conf:"高", src:"https://www.xiaohongshu.com/explore/69b02b1300000000150236a5", type:"正文和图片已读", tags:["AgentRAG","MCP工具","后训练RL","coding"]},
+      {c:"美团", p:"LongCat 北斗", d:"基座/多模态", t:"美团 LongCat 北斗面经凉面", r:"一面 1h+", q:"图像理解大模型问题、生成理解统一、Encoder-free vs Vision tower、Code Agent 使用", e:"股票最佳时机，因 HC 结束流程", conf:"高", src:"https://www.xiaohongshu.com/explore/6a01a3960000000006021c87", type:"正文已读", tags:["多模态","AgentRAG","coding","项目论文"]},
+      {c:"美团", p:"北斗计划", d:"人才计划实习", t:"本科拿下人才计划实习，美团北斗 offer", r:"offer/timeline", q:"本科候选人北斗 offer 线索，具体技术题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/690319000000000007002469", type:"搜索结果识别", tags:["GMHR","项目论文"]},
+      {c:"美团", p:"北斗计划", d:"大模型", t:"美团大模型北斗计划一面凉经", r:"一面", q:"标题明确，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/69ba16390000000022029d8b", type:"搜索结果识别", tags:["项目论文","后训练RL"]},
+      {c:"美团", p:"北斗计划", d:"实习 timeline", t:"挑战 10 天最快美团北斗实习 timeline & 面经", r:"timeline/面经", q:"标题明确，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/68020781000000000903bce5", type:"搜索结果识别", tags:["GMHR","项目论文"]},
+      {c:"美团", p:"北斗计划", d:"算法", t:"美团北斗计划一面面经", r:"一面", q:"标题明确，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/6a2935500000000021017bc8", type:"搜索结果识别", tags:["项目论文","coding"]},
+      {c:"美团", p:"北斗计划", d:"实习 offer", t:"美团北斗实习 get，附面经", r:"offer/面经", q:"标题明确，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/685a91520000000017035fa3", type:"搜索结果识别", tags:["GMHR","项目论文"]},
+      {c:"美团", p:"北斗计划", d:"一面", t:"美团北斗一面记录", r:"一面", q:"标题明确，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/68762d7a0000000012021fbc", type:"搜索结果识别", tags:["项目论文"]},
+      {c:"美团", p:"北斗计划", d:"三面", t:"美团北斗计划三面面经", r:"三面", q:"标题明确，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/6a3c017e0000000022009b07", type:"搜索结果识别", tags:["项目论文","GMHR"]},
+      {c:"美团", p:"北斗计划", d:"大模型", t:"算法面经：美团北斗大模型", r:"大模型面经", q:"标题明确，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/693e2461000000001e02ffae", type:"搜索结果识别", tags:["后训练RL","项目论文"]},
+      {c:"美团", p:"北斗计划", d:"博士/大模型", t:"博士秋招记录，美团北斗大模型", r:"已挂", q:"标题明确，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/68da937c0000000007029b73", type:"搜索结果识别", tags:["项目论文"]},
+      {c:"美团", p:"北斗计划", d:"算法", t:"美团面经，北斗计划算法，不出意外挂了", r:"算法面经", q:"标题明确，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/68dcc26b000000000700a35d", type:"搜索结果识别", tags:["coding","项目论文"]},
+      {c:"快手", p:"快Star-X", d:"大模型应用", t:"快Star-X 大模型应用三面", r:"三面，最后技术面", q:"项目细节、经典序列建模、长用户序列架构、大模型处理优势、AUC/UAUC", e:"合并 k 个升序链表", conf:"高", src:"https://www.xiaohongshu.com/explore/68a808ed000000001d03b1b8", type:"正文已读", tags:["推荐搜索","AgentRAG","coding","项目论文"]},
+      {c:"快手", p:"快Star-X", d:"大模型算法", t:"快手快STAR-X 大模型算法二面", r:"二面", q:"CPT/RAG、是否跑过 RL、DPO 和 RL 适用场景、RL 稳定性、reward hacking、RAG 召回不可靠文档", e:"无 coding，偏聊天", conf:"高", src:"https://www.xiaohongshu.com/explore/689af2bb000000001d0379ae", type:"正文已读", tags:["后训练RL","AgentRAG","Benchmark","项目论文"]},
+      {c:"快手", p:"快Star", d:"大模型应用", t:"快Star 大模型应用面经", r:"面经", q:"标题明确，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/6a013c2100000000060304cb", type:"搜索结果识别", tags:["AgentRAG","项目论文"]},
+      {c:"快手", p:"KStar/快Star", d:"大模型答辩", t:"快手 KStar 答辩记录，大模型方向", r:"答辩", q:"答辩强度和 bar，具体题待补读", e:"答辩", conf:"中", src:"https://www.xiaohongshu.com/explore/6880bebe000000002400e16b", type:"搜索结果识别", tags:["GMHR","项目论文"]},
+      {c:"快手", p:"快Star", d:"大模型", t:"25 届快Star 大模型面经", r:"面经", q:"标题明确，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/66b87578000000001e01ec6e", type:"搜索结果识别", tags:["项目论文","后训练RL"]},
+      {c:"快手", p:"快Star", d:"大模型应用", t:"快 STAR 大模型应用面经", r:"多图面经", q:"标题明确，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/66b6d915000000001e01cc6c", type:"搜索结果识别", tags:["AgentRAG","项目论文"]},
+      {c:"快手", p:"快Star", d:"一面", t:"快Star 一面面经", r:"一面", q:"标题明确，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/688434dc0000000013013100", type:"搜索结果识别", tags:["项目论文","coding"]},
+      {c:"快手", p:"快Star", d:"二面", t:"快Star 二面面经", r:"二面", q:"标题明确，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/6884c07c0000000012022f57", type:"搜索结果识别", tags:["项目论文","coding"]},
+      {c:"快手", p:"快Star", d:"答辩", t:"快Star 答辩强度与通过 bar", r:"答辩", q:"答辩强度和通过 bar，具体题不足", e:"答辩", conf:"中", src:"https://www.xiaohongshu.com/explore/68da58fa0000000013011ca5", type:"搜索结果识别", tags:["GMHR"]},
+      {c:"快手", p:"快Star", d:"算法", t:"26 届算法秋招：快Star", r:"秋招/面经", q:"标题明确，具体题待补读", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/688875430000000022020242", type:"搜索结果识别", tags:["项目论文","coding"]},
+      {c:"MiniMax", p:"TopTalent", d:"多模态后训练", t:"MiniMax TopTalent 大模型算法面经", r:"一面二面三面", q:"手写 2D 卷积、初创和大厂意愿、图片理解 RL 对 video 的影响、benchmark 作用、项目价值", e:"2D 卷积，交叉面", conf:"高", src:"https://www.xiaohongshu.com/explore/6900d8920000000007031474", type:"正文已读", tags:["多模态","后训练RL","Benchmark","coding"]},
+      {c:"阶跃星辰", p:"基座组", d:"后训练", t:"StepFun 阶跃星辰基座组后训练一面", r:"一面", q:"混合加训、continue SFT、SFT loss 起点和收敛、RLVR 策略、1T 模型训练困难、benchmark 驱动优化", e:"top-p sampling、GRPO", conf:"高", src:"https://www.xiaohongshu.com/explore/69c389db000000001a03479c", type:"正文已读", tags:["后训练RL","Benchmark","训练系统","coding"]},
+      {c:"月之暗面", p:"Kimi", d:"模型能力实习", t:"月之暗面模型能力实习生一面凉经", r:"一面", q:"标题明确为模型能力实习一面，适合重点准备模型评测、能力归因、长上下文、Agent 工具调用和业务指标。具体题待补读。", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/69283473000000000d03fa82", type:"搜索结果识别", tags:["Benchmark","AgentRAG","长上下文","项目论文"]},
+      {c:"月之暗面", p:"Kimi", d:"大模型实习", t:"北京月之暗面(Kimi)大模型实习面试贴", r:"实习面试", q:"标题明确为 Kimi 大模型实习面试，推测会围绕长上下文、Kimi 产品能力、项目经历和大模型基础展开，具体题待补读。", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/67639e2c000000001300120e", type:"搜索结果识别", tags:["长上下文","AgentRAG","项目论文"]},
+      {c:"月之暗面", p:"Moonshot", d:"大模型算法", t:"大模型算法工程师面经——月之暗面", r:"算法面经", q:"标题明确为月之暗面大模型算法面经，建议按模型结构、训练稳定性、后训练、评测、工程落地准备。具体题待补读。", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/68a92d59000000001d01396f", type:"搜索结果识别", tags:["训练系统","后训练RL","Benchmark","项目论文"]},
+      {c:"月之暗面", p:"Kimi Agent", d:"Agent Engineer", t:"月之暗面（Kimi）Agent Engineer 面经", r:"面经", q:"标题明确为 Agent Engineer 面经，和工具调用、任务分解、上下文管理、agent harness、评测闭环高度相关。具体题待补读。", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/6a295f6a0000000007013ba1", type:"搜索结果识别", tags:["AgentRAG","MCP工具","工程实践","coding"]},
+      {c:"月之暗面", p:"Kimi", d:"大模型一面", t:"月之暗面（kimi)大模型一面", r:"一面", q:"标题明确为 Kimi 大模型一面。建议准备长上下文压缩、MoE、post-training、coding agent 和产品场景结合。具体题待补读。", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/674d14be000000000202dfe2", type:"搜索结果识别", tags:["长上下文","后训练RL","AgentRAG","项目论文"]},
+      {c:"月之暗面", p:"Kimi K2", d:"Agentic Intelligence", t:"Kimi K2: Open Agentic Intelligence", r:"技术背景", q:"K2 技术报告强调 MoE、MuonClip、15.5T tokens 零 loss spike、多阶段后训练、agentic data synthesis、joint RL、SWE-Bench 和 Tau2-Bench。非面经。", e:"无", conf:"低", src:"https://arxiv.org/abs/2507.20534", type:"技术背景", tags:["AgentRAG","后训练RL","训练系统","Benchmark"]},
+      {c:"小米", p:"MiMo", d:"多模态大模型", t:"小米mimo 顶尖应届 多模态大模型 面经", r:"顶尖应届面经", q:"标题明确为 MiMo 顶尖应届多模态大模型面经，建议重点准备 VLM、推理模型、后训练、多模态数据和项目深挖。具体题待补读。", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/6900da7c000000000401556d", type:"搜索结果识别", tags:["多模态","后训练RL","项目论文","Benchmark"]},
+      {c:"小米", p:"MiMo", d:"Agent/上下文", t:"MiMO面试官：上百个skills如何不爆上下文？", r:"面试题线索", q:"标题指向大规模 skills/tool context 管理问题，适合准备工具选择、上下文压缩、检索式 skill routing、长任务记忆和成本控制。正文待补读。", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/6a244bd50000000021019085", type:"搜索结果识别", tags:["AgentRAG","MCP工具","长上下文","工程实践"]},
+      {c:"小米", p:"MiMo", d:"大模型数据", t:"Mimo大模型数据岗凉经", r:"数据岗面经", q:"标题明确为 MiMo 大模型数据岗凉经，准备重点是数据清洗、数据配比、可验证任务构造、评测集污染、后训练数据质量。具体题待补读。", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/6a146b780000000036003028", type:"搜索结果识别", tags:["数据","后训练RL","Benchmark"]},
+      {c:"小米", p:"MiMo", d:"算法研究员", t:"大语言模型MiMo招算法研究员", r:"招聘信号", q:"MiMo 算法研究员招聘信号，指向推理、编程、Agent、后训练和模型系统。非面经。", e:"无", conf:"低", src:"https://www.xiaohongshu.com/explore/6a264f1000000000070134ec", type:"招聘信号", tags:["后训练RL","AgentRAG","训练系统"]},
+      {c:"小米", p:"MiMo", d:"推理后训练", t:"MiMo: Unlocking the Reasoning Potential of Language Model", r:"技术报告", q:"MiMo-7B 强调 25T token 预训练、MTP、130K 可验证数学/编程题、test-difficulty-driven code reward、数据重采样稳定 RL。非面经。", e:"无", conf:"低", src:"https://arxiv.org/abs/2505.07608", type:"技术背景", tags:["后训练RL","训练系统","Benchmark","数据"]},
+      {c:"小米", p:"MiMo", d:"模型背景", t:"小米 MiMo 公开资料", r:"技术/产品背景", q:"MiMo 面向推理、编程和 AI Agent，是小米人车家生态 AI 底座。适合准备端侧/车端/IoT 场景、推理模型后训练和部署。非面经。", e:"无", conf:"低", src:"https://zh.wikipedia.org/wiki/%E5%B0%8F%E7%B1%B3MiMo", type:"技术背景", tags:["AgentRAG","推理系统","后训练RL"]},
+      {c:"DeepSeek", p:"暑期实习", d:"大模型/算法", t:"DeepSeek 暑期实习 一面挂+失忆版", r:"一面", q:"标题明确为 DeepSeek 暑期实习一面。建议准备 R1/RLVR、GRPO、MLA、MoE、MTP、低成本训练、数学和代码推理。具体题待补读。", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/6a0033e7000000000803e9cf", type:"搜索结果识别", tags:["后训练RL","训练系统","项目论文","Benchmark"]},
+      {c:"DeepSeek", p:"招聘/面试", d:"技术面试", t:"经鉴定，deepseek真的只招“天才”", r:"招聘/面试讨论", q:"标题和互动量显示 DeepSeek 面试 bar 讨论度高，但不一定是完整技术面经。作为 bar 和候选人画像参考，不计入强技术结论。", e:"无", conf:"低", src:"https://www.xiaohongshu.com/explore/67bee7c90000000029024d03", type:"面试体验/讨论", tags:["项目论文","GMHR"]},
+      {c:"DeepSeek", p:"面试体验", d:"研究岗/算法岗", t:"我被deepseek的面试官拷打了三小时！！！", r:"长时间面试体验", q:"标题显示高强度深挖，可能偏研究/算法项目拷打。具体技术题待补读，不能直接泛化到实习流程。", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/6799927f000000002902455b", type:"搜索结果识别", tags:["项目论文","训练系统","后训练RL"]},
+      {c:"DeepSeek", p:"面试对比", d:"OpenAI 对比", t:"DeepSeek vs Open AI 面试经历分享", r:"面试经历分享", q:"标题明确为 DeepSeek/OpenAI 面试经历对比，适合补充面试风格、bar、研究深挖方式。具体题待补读。", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/67d4fa1b000000001c001aca", type:"搜索结果识别", tags:["项目论文","GMHR","训练系统"]},
+      {c:"DeepSeek", p:"R1", d:"推理后训练", t:"DeepSeek-R1 技术背景", r:"技术报告/公开资料", q:"R1-Zero 以规则奖励和 GRPO 做 RL，R1 引入冷启动和多阶段训练，重点准备 RL without SFT、奖励设计、可读性、语言混杂和蒸馏。非面经。", e:"无", conf:"低", src:"https://zh.wikipedia.org/wiki/DeepSeek-R1", type:"技术背景", tags:["后训练RL","Benchmark","训练系统"]},
+      {c:"DeepSeek", p:"V3/V4", d:"训练系统", t:"DeepSeek 技术演进公开资料", r:"技术背景", q:"公开资料和综述强调 MLA、MoE、MTP、FP8、低成本训练、并行通信优化和长上下文。非面经，但应作为 DeepSeek 面试准备主线。", e:"无", conf:"低", src:"https://arxiv.org/abs/2507.09955", type:"技术背景", tags:["训练系统","推理系统","Benchmark"]},
+      {c:"智谱", p:"GLM", d:"大模型岗", t:"压力面：智谱AI大模型岗", r:"压力面", q:"标题明确为智谱大模型岗压力面。准备 GLM 架构、Agent、后训练、项目细节、业务场景和开放问题。具体题待补读。", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/689065ee0000000023038a0c", type:"搜索结果识别", tags:["项目论文","AgentRAG","后训练RL"]},
+      {c:"智谱", p:"GLM", d:"LLM", t:"智谱LLM面经", r:"LLM 面经", q:"标题明确为智谱 LLM 面经，建议准备 Transformer/RoPE/MHA、SFT/RL、RAG/Agent、GLM 技术路线和项目深挖。具体题待补读。", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/6a4095a20000000022008cb5", type:"搜索结果识别", tags:["后训练RL","推理系统","AgentRAG","项目论文"]},
+      {c:"智谱", p:"GLM Agent", d:"Agent", t:"智谱大模型agent面经", r:"Agent 面经", q:"标题明确为智谱大模型 Agent 面经，重点准备工具调用、任务规划、GUI/网页操作、agent memory、评测和失败恢复。具体题待补读。", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/697cb628000000002202d31e", type:"搜索结果识别", tags:["AgentRAG","MCP工具","工程实践"]},
+      {c:"智谱", p:"GLM", d:"大模型一面", t:"智谱大模型岗｜一面面经 细节拷打", r:"一面", q:"标题明确为大模型岗一面细节拷打，说明项目和技术细节会被追问。具体题待补读。", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/69ed981b000000003601b6e6", type:"搜索结果识别", tags:["项目论文","后训练RL","训练系统"]},
+      {c:"智谱", p:"智谱华章", d:"算法岗", t:"10.22智谱华章算法一面-45min", r:"一面 45min", q:"标题明确为算法一面 45 分钟。建议准备算法 coding、LLM 基础、项目细节和智谱业务场景。具体题待补读。", e:"可能有 coding，待补读", conf:"中", src:"https://www.xiaohongshu.com/explore/68f89797000000000302fcbc", type:"搜索结果识别", tags:["coding","项目论文","训练系统"]},
+      {c:"智谱", p:"智谱华章", d:"大模型应用暑期实习", t:"26届大模型应用暑期实习面经｜智谱华章一面", r:"一面", q:"标题明确为大模型应用暑期实习一面。准备应用侧 RAG、Agent、评测、prompt、工具调用和业务落地。具体题待补读。", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/6884efa0000000000b01d154", type:"搜索结果识别", tags:["AgentRAG","Benchmark","项目论文"]},
+      {c:"智谱", p:"智谱华章", d:"大模型应用暑期实习", t:"26届大模型应用暑期实习面经｜智谱华章二面", r:"二面", q:"标题明确为大模型应用暑期实习二面，可作为同一流程的后续样本。具体题待补读。", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/6887840f0000000025027537", type:"搜索结果识别", tags:["AgentRAG","项目论文","GMHR"]},
+      {c:"智谱", p:"GUI Agent", d:"Agent 实习", t:"接好运 面经分享|智谱GUI agent实习岗", r:"实习岗面经", q:"标题明确为 GUI Agent 实习岗面经。重点准备 GUI grounding、工具调用、操作轨迹、状态表示、任务成功率和 agent 评测。具体题待补读。", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/696206db000000002202e49b", type:"搜索结果识别", tags:["AgentRAG","工程实践","MCP工具","Benchmark"]},
+      {c:"智谱", p:"GLM Agent", d:"Agent 算法", t:"智谱大模型agent算法面经", r:"算法面经", q:"标题明确为大模型 Agent 算法面经，准备 agent planning、tool selection、RL for tool use、数据构造和 coding。具体题待补读。", e:"待二次读取", conf:"中", src:"https://www.xiaohongshu.com/explore/69fe9dbf0000000023006200", type:"搜索结果识别", tags:["AgentRAG","后训练RL","coding"]},
+      {c:"智谱", p:"Z.ai/GLM", d:"公司与模型背景", t:"Z.ai / 智谱 GLM 公开资料", r:"技术背景", q:"Z.ai/智谱主线是 GLM 系列、Agentic coding、reasoning、多模态 GLM-V、国产芯片适配和成本效率。非面经。", e:"无", conf:"低", src:"https://en.wikipedia.org/wiki/Z.ai", type:"技术背景", tags:["AgentRAG","多模态","训练系统","推理系统"]}
+    ]
+
+    const styles = [
+      ["腾讯青云/混元", "最强论文和项目拷打，GM/答辩可能压力大。大模型方向高频覆盖 GRPO/DAPO、RAG、Agent、推理加速、verl/vLLM/Ray、KV cache。"],
+      ["字节 Seed/TopSeed", "更像研究实习专项，重视项目训练细节和业务化方案题。典型问题是如何训练豆包专业输出能力、SFT/RL/CPT/RAG 怎么落地。"],
+      ["小红书 REDstar", "大模型题与算法基础混合，长上下文、Agent、归一化、coding、IQ 题都可能出现。排序和推荐背景仍很重要。"],
+      ["阿里/淘天 T-Star", "考试化明显，机试覆盖 CV/ML 基础、概率、传统机器学习、MHA、DP、图论、交叉面和 HR 性格面。"],
+      ["美团北斗/LongCat", "分基座和应用两条线。基座问 VLM 架构和生成理解统一，应用问 RAG、memory、MCP、function calling、tool router、RL 优化工具调用。"],
+      ["快手快Star-X", "后训练与搜索推荐结合。DPO/RL、reward hacking、RAG 召回噪声、长用户序列、AUC/UAUC 高频。"],
+      ["MiniMax/阶跃", "更接近大模型公司真实研发面。MiniMax 多模态后训练，阶跃直接问 SFT/RL 指标、收敛、1T 模型训练和 GRPO/top-p 手撕。"],
+      ["Kimi / Moonshot", "公开标题样本集中在模型能力实习、大模型算法、Agent Engineer。准备重点是长上下文、Kimi K2、MoE、MuonClip、agentic data synthesis、工具调用和 coding agent。"],
+      ["小米 MiMo", "样本覆盖多模态大模型、数据岗、skills 上下文和算法研究员招聘。技术准备应围绕 reasoning-first、预训练与后训练联动、可验证数学/代码 RL、Agent 和人车家生态。"],
+      ["DeepSeek", "公开面经数量少但讨论度高。准备主线是 R1/RLVR、GRPO、MLA、MoE、MTP、低成本训练、FP8、推理系统和数学/代码 benchmark。"],
+      ["智谱 GLM / Z.ai", "小红书标题样本覆盖 LLM、大模型岗、Agent、GUI Agent、暑期实习一二面。准备 GLM 技术路线、Agentic coding、GUI 操作、RAG/Agent 评测和国产算力适配。"]
+    ]
+
+    const rankLabels = {
+      "项目论文": "项目/论文深挖",
+      "后训练RL": "SFT/RL/GRPO/DPO/PPO",
+      "coding": "Coding/手撕",
+      "AgentRAG": "RAG/Agent/工具调用",
+      "GMHR": "HR/GM/答辩/交叉面",
+      "多模态": "VLM/多模态",
+      "推理系统": "KV cache/MHA/vLLM",
+      "训练系统": "训练系统/显存/并行",
+      "Benchmark": "Benchmark/评测",
+      "MCP工具": "MCP/function calling/router",
+      "推荐搜索": "推荐/搜索/长用户序列",
+      "数据": "数据构造/清洗/配比",
+      "长上下文": "Long Context",
+      "工程实践": "Agent 工程实践"
+    }
+
+    const tbody = document.querySelector("#sample-table tbody")
+    samples.forEach((s, idx) => {
+      const tr = document.createElement("tr")
+      const confClass = s.conf === "高" ? "high" : s.conf === "中" ? "medium" : "low"
+      const source = s.src.startsWith("http") ? `<a href="${s.src}" target="_blank" rel="noreferrer">来源</a>` : `<span class="muted">${s.src}</span>`
+      tr.innerHTML = `
+        <td>${idx + 1}</td>
+        <td><strong>${s.c}</strong><br><span class="muted">${s.p}</span></td>
+        <td>${s.d}</td>
+        <td class="source-title">${s.t}<br><span class="muted">${s.type}</span></td>
+        <td>${s.r}</td>
+        <td class="questions">${s.q}<br>${s.tags.map(t => `<span class="tag">${rankLabels[t] || t}</span>`).join(" ")}</td>
+        <td>${s.e}</td>
+        <td><span class="tag ${confClass}">${s.conf}</span></td>
+        <td>${source}</td>
+      `
+      tbody.appendChild(tr)
+    })
+
+    const companyStyle = document.querySelector("#company-style")
+    styles.forEach(([name, body]) => {
+      const div = document.createElement("div")
+      div.className = "company"
+      div.innerHTML = `<h3>${name}</h3><p class="muted">${body}</p>`
+      companyStyle.appendChild(div)
+    })
+
+    const counts = {}
+    samples.filter(s => s.conf !== "低").forEach(s => {
+      s.tags.forEach(tag => {
+        counts[tag] = (counts[tag] || 0) + 1
+      })
+    })
+    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1])
+    const max = sorted[0]?.[1] || 1
+    const rankList = document.querySelector("#rank-list")
+    sorted.forEach(([tag, count]) => {
+      const item = document.createElement("div")
+      item.className = "rank-item"
+      item.innerHTML = `
+        <strong>${rankLabels[tag] || tag}</strong>
+        <div class="bar"><span style="width:${Math.round(count / max * 100)}%"></span></div>
+        <span class="muted">${count}</span>
+      `
+      rankList.appendChild(item)
+    })
+  </script>
+</body>
+</html>
