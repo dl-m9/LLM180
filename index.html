@@ -1648,6 +1648,14 @@
         urls: [{ label: "arXiv 2203.02155", url: "https://arxiv.org/abs/2203.02155" }],
         checks: ["RLHF 链路是 demonstration SFT、偏好排序训练 reward model、PPO 优化 policy。", "KL 到 SFT/reference policy 是防 reward hacking 和语言分布漂移的关键约束。", "InstructGPT 还使用 pretraining-mix 项缓解能力回退。"]
       },
+      ppo: {
+        type: "论文", confidence: "高", title: "PPO / Generalized Advantage Estimation",
+        urls: [
+          { label: "PPO arXiv 1707.06347", url: "https://arxiv.org/abs/1707.06347" },
+          { label: "GAE arXiv 1506.02438", url: "https://arxiv.org/abs/1506.02438" }
+        ],
+        checks: ["Critic的value不是reward model给出的分数，而是V(s_t)对状态s_t未来折扣回报期望的预测。", "rollout阶段缓存的old value用于固定地计算TD residual、GAE、return target和可选的value clipping；它通常只是缓存张量，不一定常驻一份old critic。", "GAE先计算delta_t=r_t+gamma V_old(s_{t+1})-V_old(s_t)，再按gamma lambda对未来TD residual做指数加权。", "Critic的监督目标可写成R_hat_t=A_hat_t+V_old(s_t)，训练时最小化当前V_psi(s_t)与detach后的R_hat_t之间的回归误差。", "真实终止状态的下一状态value置0；如果只是达到最大长度而截断，则是否bootstrap必须按环境终止语义处理。", "LLM PPO通常只在response有效token上计算value loss，并正确mask prompt、padding、环境观察和非策略token。"]
+      },
       dpo: {
         type: "论文", confidence: "高", title: "Direct Preference Optimization",
         urls: [{ label: "arXiv 2305.18290", url: "https://arxiv.org/abs/2305.18290" }],
@@ -1864,7 +1872,7 @@
         ["Safety reward", "helpfulness 和 harmlessness 奖励如何平衡？", ["helpfulness追求回答有用，harmlessness限制危险或违规输出", "冲突时通常用分层策略、拒答数据、安全reward和人工评测平衡", "要避免模型过度拒答或为了有用而越界"], ["为什么安全训练会影响正常能力？", "拒答率怎么评估？"], ["只追求安全，不看可用性"], "rlhf", "基础"],
         ["Verifier", "verifier 在推理模型训练里有什么作用？", ["verifier判断最终答案或中间步骤是否满足规则，是RLVR和RFT的关键", "数学可用答案校验，代码可用单元测试，工具任务可用环境反馈", "verifier覆盖不足会导致模型学会钻漏洞"], ["verifier和reward model区别？", "代码单测不完备怎么办？"], ["把verifier当绝对真值"], "deepseek", "基础"],
         ["Math/code reward", "数学和代码任务的奖励怎么设计？", ["数学常用最终答案匹配、格式校验和必要的过程约束", "代码常用编译、单元测试、隐藏测试和复杂度检查", "要防止格式投机、hard-coded测试和过长推理"], ["代码reward稀疏怎么办？", "数学答案等价性怎么判断？"], ["只看字符串完全匹配"], "grpo", "基础"],
-        ["RL compute bottleneck", "大规模 LLM RL 的计算瓶颈在哪里？", ["rollout生成成本高，尤其长链推理和多采样group", "训练还要跑reward、logprob、KL和反向传播", "系统上要优化vLLM rollout、Ray资源调度、batching和异步流水"], ["为什么RL比SFT贵？", "显存瓶颈和吞吐瓶颈分别是什么？"], ["只说GPU不够，不拆rollout和训练"], "ray", "进阶"],
+        ["PPO critic and GAE", "PPO 中 Critic 如何训练，value 怎么得到，advantage 怎么计算？", ["Critic通常是在policy backbone上增加scalar value head或使用独立value model，对每个状态s_t=(prompt,response前缀)前向预测V_psi(s_t)，含义是从该状态继续生成时未来折扣回报的期望，不是reward model对完整回答的打分", "rollout开始时用当时的Critic计算并缓存V_old(s_t)；old表示计算这批数据时的价值预测快照，后续多个PPO epoch中保持固定，工程上通常缓存每个token的old_values而不必长期保存完整old critic", "先把环境或reward model反馈整理成逐步reward；LLM RLHF常在末端加入最终质量分，并在各response token加入KL shaping或其他过程奖励，然后计算delta_t=r_t+gamma V_old(s_{t+1})-V_old(s_t)", "GAE把当前及未来TD residual按gamma乘lambda衰减累加：A_hat_t=delta_t+gamma lambda delta_{t+1}+...；lambda越小越接近低方差的一步TD，越大越接近高方差的Monte Carlo return", "根据A=Q-V构造Critic目标R_hat_t=A_hat_t+V_old(s_t)，将A_hat和R_hat都detach；当前Critic最小化(V_psi(s_t)-R_hat_t)^2，也可相对V_old加入value clipping限制同一批数据上的预测变化", "真实终止状态令下一状态value为0，长度截断则按环境语义决定是否bootstrap；训练只在有效response token上计算并mask prompt、padding、工具观察等非策略位置，同时监控value loss、explained variance和advantage分布"], ["Critic和reward model有什么区别？", "为什么计算GAE时使用V_old而不是正在更新的V_psi？", "gamma和lambda分别控制什么？", "为什么R_hat=A_hat+V_old？", "EOS和max-length截断的bootstrap有什么区别？", "value clipping是否是PPO必需的？"], ["把value当成reward model分数；重新训练每个minibatch时反复计算advantage造成moving target；没有detach return target；真实终止和长度截断一律把下一状态value设为0；把prompt和padding token算入value loss"], "ppo", "高频追问"],
         ["GRPO trainer", "一个 GRPO trainer 最少有哪些模块？", ["policy模型生成group responses并计算logprob", "reward函数给每个response打分，组内归一得到advantage", "loss用ratio、clip、KL等项更新policy，并记录reward、KL、长度和通过率"], ["如何接vLLM rollout？", "怎么处理padding和mask？"], ["只会写公式，不会说数据流"], "grpo", "高频追问"],
         ["DPO overfitting", "DPO 容易过拟合哪些东西？", ["过拟合偏好数据的长度、格式、模板和标注者风格", "如果chosen/rejected差异不代表真实能力，模型会学捷径", "要做难负例、长度控制、跨域验证和人工抽检"], ["如何构造hard negative？", "DPO beta怎么影响保守程度？"], ["只调学习率，不处理数据问题"], "dpo", "进阶"],
         ["IPO KTO SimPO", "IPO、KTO、SimPO 这类方法和 DPO 怎么比较？", ["它们都在简化或改造偏好优化目标，减少PPO式RL复杂度", "差异主要在偏好数据形式、reference依赖、长度偏置和优化稳定性", "面试里不用背所有公式，要讲清适用数据和风险"], ["什么时候用KTO？", "SimPO为什么讨论reference-free？"], ["堆名词但不讲目标函数解决什么痛点"], "web", "进阶"],
@@ -1961,7 +1969,7 @@
         ["FP8 training", "FP8 训练的收益和风险是什么？", ["FP8降低显存和带宽，提高训练吞吐", "风险是数值范围和精度不足，需要缩放、校准和关键算子保精度", "适合大规模训练系统优化，但必须有稳定性监控"], ["FP8和bf16怎么混用？", "哪些张量不适合FP8？"], ["把FP8当无损压缩"], "deepseek", "进阶"],
         ["Ray verl", "verl/Ray 在 LLM RL 里起什么作用？", ["Ray负责分布式资源和actor调度，verl组织policy、rollout、reward和trainer", "它让vLLM rollout、训练GPU和reward服务协同", "面试要说清数据流和资源瓶颈"], ["TRL和verl有什么区别？", "rollout worker如何扩展？"], ["只说框架名，不讲底层资源调度"], "ray", "高频追问"],
         ["vLLM rollout", "为什么 RL 训练里常用 vLLM 加速 rollout？", ["rollout是生成大量候选或轨迹，推理吞吐直接决定训练速度", "vLLM用PagedAttention和continuous batching提高并发", "还要处理logprob回传、采样参数一致和模型权重同步"], ["权重更新后rollout服务怎么同步？", "vLLM和训练进程共享GPU吗？"], ["只把vLLM当部署工具"], "vllm", "高频追问"],
-        ["Negative transfer", "多领域数据混训时，如何避免某个能力提升导致其他能力下降？", ["先把问题定义为多任务优化中的负迁移或灾难性遗忘；根因通常是有效token失衡、loss或reward尺度不一致，以及领域梯度方向冲突", "数据层按language乘task建立分桶，依据有效token、质量、成本和目标优先级采样，并持续混入通用数据与历史能力数据做replay，避免新领域覆盖旧分布", "优化层分别记录领域loss、reward、gradient norm和更新占比；SFT按领域加权loss，RL先在领域内计算baseline、advantage或尺度校准，再聚合各领域loss", "如果两个领域梯度内积为负，说明当前更新存在冲突；可先调采样权重、学习率和训练顺序，冲突长期存在时再考虑gradient surgery、领域LoRA或Adapter、MoE专家等参数隔离", "训练流程可采用专项学习加混合巩固：先让目标能力获得有效信号，再以较低学习率加入通用replay和reference或KL约束；分阶段是一种工程策略，并非所有任务都必须完全隔离", "评测不能只看总体平均分，应维护Math、Code、Agent、中文、通用能力和安全的固定回归矩阵，比较各项增益与退化，按Pareto trade-off调整配比并设置退化阈值和早停"], ["如何判断两个任务发生了梯度冲突？", "replay数据应该占多少比例？", "为什么只看总体平均分会掩盖能力退化？", "什么时候需要用LoRA、Adapter或MoE做参数隔离？", "KL约束能完全避免灾难性遗忘吗？"], ["只说把各领域数据平均混合；只按样本数而不按有效token统计；只处理数据比例而不监控梯度贡献；某项榜单上涨就认为整体训练成功"], "multidomain", "高频追问"]
+        ["RL compute bottleneck", "大规模 LLM RL 的计算瓶颈在哪里？", ["rollout生成成本高，尤其长链推理和多采样group", "训练还要跑reward、logprob、KL和反向传播", "系统上要优化vLLM rollout、Ray资源调度、batching和异步流水"], ["为什么RL比SFT贵？", "显存瓶颈和吞吐瓶颈分别是什么？"], ["只说GPU不够，不拆rollout和训练"], "ray", "进阶"]
       ],
       vlm: [
         ["LLaVA", "LLaVA 架构怎么口述？", ["通常由vision encoder、投影层和LLM组成", "先做图文对齐，再做视觉指令微调", "关键是视觉token如何接入LLM以及多模态指令数据质量"], ["为什么要两阶段训练？", "投影层作用是什么？"], ["只说CLIP加LLM，不讲对齐训练"], "llava", "基础"],
