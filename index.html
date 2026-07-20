@@ -1786,6 +1786,17 @@
         ],
         checks: ["Qwen2.5 强调 18T token 预训练、复杂 SFT 和多阶段 RL。", "Qwen2.5-Coder 继续预训练超过 5.5T code tokens，并保留通用和数学能力。", "Qwen2.5-1M 可用于长上下文和推理系统问题，关注 sparse attention、chunked prefill 和长数据合成。"]
       },
+      multidomain: {
+        type: "论文/技术报告", confidence: "高", title: "多领域后训练 / PCGrad / InstructGPT",
+        urls: [
+          { label: "Qwen2.5 arXiv 2412.15115", url: "https://arxiv.org/abs/2412.15115" },
+          { label: "DeepSeek-R1 arXiv 2501.12948", url: "https://arxiv.org/abs/2501.12948" },
+          { label: "Kimi K2 arXiv 2507.20534", url: "https://arxiv.org/abs/2507.20534" },
+          { label: "PCGrad arXiv 2001.06782", url: "https://arxiv.org/abs/2001.06782" },
+          { label: "InstructGPT arXiv 2203.02155", url: "https://arxiv.org/abs/2203.02155" }
+        ],
+        checks: ["多领域数据应同时保留任务、语言、难度、长度、来源和验证器等元数据，不能只维护一个扁平样本池。", "数据配比应按有效 token、训练成本和目标能力控制，样本条数不能公平表示代码、短数学答案与长 Agent 轨迹的训练权重。", "中文是语言维度，Math、Code、Agent 是任务维度，数据矩阵应覆盖中文或英文与不同任务的交叉组合。", "SFT 可以在统一格式下混合多领域样本，RL 则应先路由到领域对应的 verifier 或 reward，再在领域内计算 advantage 或归一化，最后按权重聚合 loss。", "当两个任务的梯度内积为负时存在局部梯度冲突，PCGrad通过投影冲突梯度减少相互干扰，但会增加梯度计算和系统复杂度。", "InstructGPT在PPO目标中加入预训练梯度混合，用于缓解公开NLP能力回退，这说明保留通用replay是可操作的抗遗忘手段。", "Agent 轨迹通常更长、环境成本更高、信用分配更难，可先单独稳定 harness 和奖励，再进入混合巩固阶段。", "多领域训练必须配套领域指标、通用能力回归、安全评测和数据消融，防止某个高梯度或高 token 领域主导更新。"]
+      },
       zhipu: {
         type: "论文", confidence: "高", title: "GLM-4.5 / GLM-4.5V",
         urls: [
@@ -1936,21 +1947,21 @@
         ["LoRA", "LoRA 为什么能省训练资源？", ["冻结原模型权重，只训练低秩矩阵A和B表示权重增量", "可训练参数和优化器状态大幅减少，推理时可合并权重", "适合垂域和轻量适配，但能力上限受rank和数据影响"], ["LoRA加在哪些层？", "rank怎么选？"], ["以为LoRA减少原模型推理参数"], "lora", "基础"],
         ["QLoRA", "QLoRA 相比 LoRA 多了什么？", ["QLoRA把基座权重量化到4bit并冻结，梯度回传到LoRA参数", "NF4、double quantization和paged optimizer是关键节省点", "它让单卡微调更大模型成为可能，但训练和推理质量要评估"], ["QLoRA训练的是量化权重吗？", "量化误差怎么影响效果？"], ["把QLoRA说成直接训练4bit全参数"], "qlora", "基础"],
         ["PEFT choice", "LoRA、全参、prefix tuning 怎么选？", ["全参能力上限高但成本和遗忘风险高", "LoRA成本低、部署灵活，适合多数垂域适配", "prefix/prompt类更轻但表达能力有限，选择看数据量、目标能力和部署约束"], ["多LoRA怎么服务？", "什么时候必须全参？"], ["只按显存选，不看任务目标"], "lora", "进阶"],
-        ["Data mixture", "继续预训练或SFT的数据配比怎么定？", ["先按目标能力和业务流量定义数据桶", "小规模实验看能力增益和通用能力回归，再调比例", "避免某类高质量但窄分布数据把模型拉偏"], ["垂域数据越多越好吗？", "如何处理中英比例？"], ["拍脑袋配比，不做消融"], "report", "高频追问"],
+        ["Multi-domain post-training", "后训练中如何融合 Math、Code、中文、Agent 等多个领域或方向的数据？", ["先统一样本协议，但保留domain、language、difficulty、length、source、verifier和trajectory等元数据，中文应视为语言轴，Math、Code、Agent应视为任务轴", "采样不要只按样本条数，而应结合有效token预算、数据质量、目标能力、训练成本和线上流量；可用temperature sampling压低超大数据桶、抬高高价值小数据桶", "训练通常采用混合加分阶段的方案：CPT补知识分布，SFT建立统一指令和输出格式，Math与Code等可验证任务可先做联合RLVR，Agent则先稳定harness、轨迹和奖励，再做混合巩固", "RL阶段不能直接把不同领域的原始reward混在一起比较；应按prompt路由到规则验证器、单元测试、任务成功率或模型奖励，在领域内做baseline、advantage或尺度校准，再按领域权重聚合loss", "Agent轨迹长、rollout昂贵且信用分配困难，应按token或计算预算限额，正确mask环境观察与非模型token，并监控无效调用、成功率、步数和成本", "评测要建立language乘task的交叉矩阵，同时看Math、Code、Agent、中文表达、通用能力和安全回归，并通过配比消融与梯度或loss占比监控是否有单一领域主导训练"], ["这是一定要做分阶段RL吗？", "不同领域reward为什么不能直接相加？", "多领域混训时如何避免一个能力提升导致其他能力下降？", "Math和Code可以一起做RLVR吗？", "Agent长轨迹怎么避免吃掉全部token预算？", "中文数据应该单独作为一个domain吗？"], ["把中文和Math、Code、Agent当成互斥的同级数据桶；只按样本数量配比；直接混合不同量纲的原始reward；只看总体平均分，不做分领域回归"], "multidomain", "高频追问"],
         ["Data cleaning", "大模型训练数据清洗关注什么？", ["去重、去低质、去污染、去隐私和安全风险", "保留高质量推理、代码和领域知识数据", "清洗策略要用质量模型、规则和抽检一起验证"], ["数据去重为什么重要？", "网页数据怎么过滤？"], ["只追求数据量"], "web", "基础"],
         ["Dedup", "数据去重对训练有什么影响？", ["重复数据会浪费算力并导致模型记忆和评测污染", "near-duplicate更难，需要simhash、MinHash或embedding方法", "去重要在文档、段落和样本级别分别考虑"], ["去重会不会误删模板数据？", "代码数据如何去重？"], ["只做完全字符串去重"], "web", "基础"],
         ["Benchmark contamination", "benchmark 污染怎么发现和避免？", ["训练数据可能包含测试题或近似题，导致分数虚高", "要做n-gram、语义相似、时间切分和人工抽检", "评估时加入私有集、变体题和在线新题更可靠"], ["LiveCodeBench为什么强调时间切分？", "污染一定能完全避免吗？"], ["只相信公开榜单"], "web", "基础"],
         ["Synthetic data training", "合成数据用于训练时如何验收？", ["先定义生成目标和过滤标准", "用验证器、评审模型和人工抽检筛选，再做小规模训练验证增益", "要监控多样性、错误模式和与评测集重合"], ["合成数据怎么做难度分层？", "如何避免风格坍缩？"], ["生成越多越好"], "rlhf", "基础"],
         ["Curriculum", "课程学习在大模型训练中怎么用？", ["按难度、长度或能力逐步引入数据，帮助稳定训练", "推理RL可从易验证任务到难任务", "但过强curriculum可能导致模型不适应真实混合分布"], ["难度怎么估计？", "curriculum和dynamic sampling区别？"], ["只按题目长度排序"], "dapo", "进阶"],
         ["CPT", "continued pretraining 和 SFT 的区别是什么？", ["CPT仍是语言建模目标，主要注入领域知识和语料分布", "SFT是指令输入到目标输出的监督训练，改变交互行为", "CPT后通常还要SFT/对齐，避免只会续写不会听指令"], ["领域大模型为什么先CPT？", "CPT会遗忘吗？"], ["把CPT等同于SFT"], "web", "基础"],
-        ["Domain adaptation", "垂域大模型训练怎么避免通用能力掉太多？", ["控制领域数据比例并混入高质量通用数据", "使用回归评测集监控通用能力、安全和语言质量", "必要时用LoRA、adapter或小步继续训练降低破坏"], ["垂域知识注入有哪些路线？", "RAG和微调怎么组合？"], ["只看垂域测试集"], "report", "基础"],
+        ["Multi-domain negative transfer", "多领域数据混训时，如何避免某个能力提升导致其他能力下降？", ["本质是多任务负迁移：数据token占比失衡、不同领域loss或reward尺度不一致，以及梯度方向冲突，都会让某个领域主导参数更新", "数据侧应按有效token、质量、难度和训练成本分层采样，而不是按样本数平均混合；同时保留高质量通用数据和历史能力数据做replay", "优化侧应分别记录各领域的loss、reward、gradient norm和更新占比；SFT可设置领域loss权重，RL应先在领域内计算baseline、advantage或尺度校准，再加权聚合loss", "训练流程可采用专项学习加混合巩固：先让目标能力获得稳定信号，再以较低学习率混入通用与其他领域数据做联合训练，并用reference或KL约束限制策略漂移", "若任务长期存在明显梯度冲突，可进一步使用gradient clipping、梯度投影、分领域LoRA或Adapter、MoE专家等方法隔离冲突，但需要权衡训练与部署复杂度", "评测不能只看总体平均分，应维护language乘task的固定回归矩阵，比较每个领域训练前后的增益与退化，并按Pareto trade-off动态调整采样比例、loss权重和停止点"], ["怎么判断两个领域发生了梯度冲突？", "为什么按样本数混合不公平？", "replay数据应该占多少？", "KL约束能完全避免灾难性遗忘吗？", "什么时候需要使用Adapter或MoE隔离任务？"], ["只说调整数据比例，不分析token、loss和梯度贡献；只优化总体平均分，掩盖单项能力退化；所有领域直接共享同一reward尺度；一出现冲突就上复杂的梯度手术或专家结构"], "multidomain", "高频追问"],
         ["Loss spike", "大模型训练 loss spike 怎么处理？", ["先区分数据异常、学习率过高、数值溢出、通信或硬件问题", "处理包括降低LR、梯度裁剪、跳过坏batch、检查数据和混合精度", "要记录spike前后的数据、梯度norm和checkpoint"], ["loss spike一定要回滚吗？", "MoE为什么可能更容易不稳？"], ["看到spike就盲目调小batch"], "web", "进阶"],
         ["LR warmup", "学习率 warmup 为什么重要？", ["训练初期参数和优化器状态还不稳定，直接大LR容易发散", "warmup逐步增加LR，之后按计划衰减", "大模型训练要结合batch size、优化器和loss曲线调"], ["cosine decay和constant LR怎么选？", "warmup过长有什么问题？"], ["只背warmup，不看曲线"], "transformer", "基础"],
         ["MoE load balancing", "MoE 训练为什么需要 load balancing？", ["路由器可能把token集中到少数专家，导致专家过载和能力不均", "load balance loss或路由约束鼓励专家利用更均匀", "还要关注通信、expert parallel和容量因子"], ["shared expert有什么作用？", "MoE推理为什么省激活参数？"], ["只说参数多但计算少"], "deepseek", "进阶"],
         ["FP8 training", "FP8 训练的收益和风险是什么？", ["FP8降低显存和带宽，提高训练吞吐", "风险是数值范围和精度不足，需要缩放、校准和关键算子保精度", "适合大规模训练系统优化，但必须有稳定性监控"], ["FP8和bf16怎么混用？", "哪些张量不适合FP8？"], ["把FP8当无损压缩"], "deepseek", "进阶"],
         ["Ray verl", "verl/Ray 在 LLM RL 里起什么作用？", ["Ray负责分布式资源和actor调度，verl组织policy、rollout、reward和trainer", "它让vLLM rollout、训练GPU和reward服务协同", "面试要说清数据流和资源瓶颈"], ["TRL和verl有什么区别？", "rollout worker如何扩展？"], ["只说框架名，不讲底层资源调度"], "ray", "高频追问"],
         ["vLLM rollout", "为什么 RL 训练里常用 vLLM 加速 rollout？", ["rollout是生成大量候选或轨迹，推理吞吐直接决定训练速度", "vLLM用PagedAttention和continuous batching提高并发", "还要处理logprob回传、采样参数一致和模型权重同步"], ["权重更新后rollout服务怎么同步？", "vLLM和训练进程共享GPU吗？"], ["只把vLLM当部署工具"], "vllm", "高频追问"],
-        ["Logging ablation", "训练实验日志和消融怎么设计？", ["关键记录loss、reward、KL、长度、pass rate、吞吐和显存", "消融要围绕核心假设，控制数据、模型、步数和随机性", "面试里要能用曲线解释为什么方法有效或无效"], ["Ablation没提升怎么讲？", "如何定位是数据还是算法带来的收益？"], ["只报最终分数"], "report", "基础"]
+        ["Negative transfer", "多领域数据混训时，如何避免某个能力提升导致其他能力下降？", ["先把问题定义为多任务优化中的负迁移或灾难性遗忘；根因通常是有效token失衡、loss或reward尺度不一致，以及领域梯度方向冲突", "数据层按language乘task建立分桶，依据有效token、质量、成本和目标优先级采样，并持续混入通用数据与历史能力数据做replay，避免新领域覆盖旧分布", "优化层分别记录领域loss、reward、gradient norm和更新占比；SFT按领域加权loss，RL先在领域内计算baseline、advantage或尺度校准，再聚合各领域loss", "如果两个领域梯度内积为负，说明当前更新存在冲突；可先调采样权重、学习率和训练顺序，冲突长期存在时再考虑gradient surgery、领域LoRA或Adapter、MoE专家等参数隔离", "训练流程可采用专项学习加混合巩固：先让目标能力获得有效信号，再以较低学习率加入通用replay和reference或KL约束；分阶段是一种工程策略，并非所有任务都必须完全隔离", "评测不能只看总体平均分，应维护Math、Code、Agent、中文、通用能力和安全的固定回归矩阵，比较各项增益与退化，按Pareto trade-off调整配比并设置退化阈值和早停"], ["如何判断两个任务发生了梯度冲突？", "replay数据应该占多少比例？", "为什么只看总体平均分会掩盖能力退化？", "什么时候需要用LoRA、Adapter或MoE做参数隔离？", "KL约束能完全避免灾难性遗忘吗？"], ["只说把各领域数据平均混合；只按样本数而不按有效token统计；只处理数据比例而不监控梯度贡献；某项榜单上涨就认为整体训练成功"], "multidomain", "高频追问"]
       ],
       vlm: [
         ["LLaVA", "LLaVA 架构怎么口述？", ["通常由vision encoder、投影层和LLM组成", "先做图文对齐，再做视觉指令微调", "关键是视觉token如何接入LLM以及多模态指令数据质量"], ["为什么要两阶段训练？", "投影层作用是什么？"], ["只说CLIP加LLM，不讲对齐训练"], "llava", "基础"],
