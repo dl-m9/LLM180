@@ -1656,6 +1656,14 @@
         ],
         checks: ["Critic的value不是reward model给出的分数，而是V(s_t)对状态s_t未来折扣回报期望的预测。", "rollout阶段缓存的old value用于固定地计算TD residual、GAE、return target和可选的value clipping；它通常只是缓存张量，不一定常驻一份old critic。", "GAE先计算delta_t=r_t+gamma V_old(s_{t+1})-V_old(s_t)，再按gamma lambda对未来TD residual做指数加权。", "Critic的监督目标可写成R_hat_t=A_hat_t+V_old(s_t)，训练时最小化当前V_psi(s_t)与detach后的R_hat_t之间的回归误差。", "真实终止状态的下一状态value置0；如果只是达到最大长度而截断，则是否bootstrap必须按环境终止语义处理。", "LLM PPO通常只在response有效token上计算value loss，并正确mask prompt、padding、环境观察和非策略token。"]
       },
+      rft: {
+        type: "论文", confidence: "高", title: "Llama 2 Rejection Sampling / STaR",
+        urls: [
+          { label: "Llama 2 arXiv 2307.09288", url: "https://arxiv.org/abs/2307.09288" },
+          { label: "STaR arXiv 2203.14465", url: "https://arxiv.org/abs/2203.14465" }
+        ],
+        checks: ["这里的RFT指Rejection Sampling Fine-Tuning，不是另一个常见缩写Reinforcement Fine-Tuning。", "标准流程是对每个prompt采样多个候选，用答案验证器、单元测试或reward model筛选正确或高分轨迹，再把accepted responses作为监督数据做交叉熵训练。", "Llama 2的rejection sampling流程从最新模型为每个prompt采样K个答案，由reward model选择最好答案，再迭代微调；它也使用大模型生成的数据蒸馏较小模型。", "STaR通过生成推理过程、保留得到正确答案的rationales并反复微调，展示了带验证的迭代式self-training闭环。", "RFT与Best-of-N都需要多采样，但Best-of-N只在推理时选择答案，RFT会把选中答案回流训练。", "RFT最终优化的是accepted response上的SFT交叉熵，不直接使用old policy、advantage或policy-gradient loss。", "RFT的主要上限是当前模型或教师必须先采到成功轨迹，同时要防止容易题偏置、单一推理模式、错误验证器和reward hacking。"]
+      },
       dpo: {
         type: "论文", confidence: "高", title: "Direct Preference Optimization",
         urls: [{ label: "arXiv 2305.18290", url: "https://arxiv.org/abs/2305.18290" }],
@@ -1851,7 +1859,7 @@
         ["KL penalty", "后训练里的 KL 惩罚起什么作用？", ["KL约束新策略不要偏离参考模型太远，避免reward hacking和语言能力退化", "KL过大模型学不动，过小容易跑偏，所以要看reward、长度、拒答率和benchmark", "面试里要说它是稳定性和能力保持的旋钮"], ["reference model选SFT还是base？", "KL系数如何调？"], ["把KL只当正则项，不讲策略漂移"], "rlhf", "基础"],
         ["Entropy collapse", "RL 训练中熵崩溃是什么，怎么解决？", ["熵崩溃是策略过早变得确定，输出多样性和探索能力下降", "常见原因是reward过强、KL太弱、temperature太低或数据太窄", "可以加熵正则、提高采样温度、调clip和KL、扩大任务多样性"], ["DAPO里higher clip为什么有帮助？", "熵和pass@k是什么关系？"], ["只说调温度，不分析reward和策略更新"], "dapo", "高频追问"],
         ["Reward hacking", "reward hacking 在 LLM 后训练里有哪些表现？", ["模型利用奖励漏洞而非真正解决任务，比如格式投机、过长推理、套模板、刷单元测试", "根因是reward和真实目标不一致，或评测覆盖不足", "解决要靠多奖励、多评测、人工抽检、对抗样本和训练过程监控"], ["代码任务如何防止只过公开测试？", "RAG任务的reward hacking是什么？"], ["把reward hacking只理解成作弊，不讲代理目标错位"], "rlhf", "基础"],
-        ["Rejection sampling", "RFT 或 rejection sampling fine-tuning 怎么用？", ["对同一prompt采样多条推理轨迹，用答案验证器筛出正确样本再做SFT", "它成本低、稳定，但受base模型可采到正确答案的上限限制", "常用在RL前冷启动或构造高质量推理数据"], ["为什么RFT不等于RL？", "采样温度怎么选？"], ["忽视错误轨迹和难题覆盖，导致数据太容易"], "deepseek", "基础"],
+        ["Rejection sampling fine-tuning", "RFT（Rejection Sampling Fine-Tuning）怎么做，与普通 SFT、Best-of-N 和 RL 有什么区别？", ["先让当前模型或更强教师对每个prompt采样K条候选，用数学答案验证、代码单测、Agent任务成功率或reward model打分，保留通过阈值或排名靠前且质量合格的回答", "对accepted responses做去重、难度分层、格式与安全过滤，并限制每个prompt保留数量，再把(prompt,response)作为监督数据最小化token-level交叉熵；迭代式RFT会用新模型重新采样、筛选和训练", "普通SFT主要使用既有人工或外部示范，RFT的数据由模型多采样后筛选；Best-of-N只在推理时返回最高分答案而不更新参数，RFT会把选中答案回流训练", "RFT最后仍是SFT目标，只学习被接受的正样本，不使用old policy、advantage或policy gradient；RL则直接按reward或advantage更新策略，能够利用正负或相对信号并持续在线探索", "RFT适合数学、代码、形式证明等验证器可靠且模型已有非零成功概率的任务，常用于RL前冷启动、构造推理SFT数据、能力蒸馏和低成本迭代自训练", "主要风险是困难题根本采不到正确轨迹，筛选集偏向容易题，只保留最高分导致模式坍缩，以及verifier false positive或公开测试被投机；应增加困难题采样预算、保留多样正确轨迹、使用隐藏测试并做分桶回归"], ["为什么RFT不等于RL？", "如果一道题始终采不到正确答案怎么办？", "RFT和Best-of-N的计算成本差在哪里？", "每个prompt应该保留一个还是多个正确轨迹？", "如何避免筛选后的训练集越来越简单？", "开放式任务没有可靠verifier时还能不能做RFT？"], ["把RFT误解为policy-gradient训练；把RFT和Best-of-N混为一谈；只保留最高分而不做多样性与去重；不检查verifier错误；只报告accepted样本质量而忽略采样总成本和困难题覆盖率"], "rft", "高频追问"],
         ["Process reward vs outcome reward", "process reward 和 outcome reward 的区别是什么？", ["outcome reward只看最终答案，便宜但信用分配弱", "process reward评价中间步骤，能指导推理链，但标注和验证更难", "复杂任务可用过程约束加最终验证，避免模型走对答案但过程不可控"], ["过程奖励会不会鼓励冗长CoT？", "工具调用任务怎么做过程奖励？"], ["把过程奖励等同于展示思维链"], "rlhf", "进阶"],
         ["DPO data quality", "DPO 训练前如何评价数据质量？", ["看偏好对是否真实可区分，chosen和rejected差异是否对应目标能力", "看长度、风格、难度、领域分布和重复样本，避免模型学捷径", "最好用小规模训练、held-out胜率和人工抽检验证"], ["chosen更长会有什么问题？", "偏好数据噪声怎么处理？"], ["只看数据量，不看偏好边际和噪声"], "dpo", "高频追问"],
         ["Preference data construction", "偏好数据怎么构造才适合后训练？", ["先定义目标能力和失败类型，再让多个模型或同模型多采样生成候选", "偏好标注要控制长度、格式、事实性和安全维度", "最后按难度和领域分层，避免只有简单偏好对"], ["pairwise和listwise偏好有什么区别？", "AI标注可不可信？"], ["先生成再随便打分，没有任务定义"], "dpo", "基础"],
